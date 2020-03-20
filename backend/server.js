@@ -3,7 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 mongoose.connect(process.env.DATABASE_URL, {
-  useNewUrlParser: true,
+  useNewUrlParser: true
 });
 
 const db = mongoose.connection;
@@ -25,4 +25,4 @@ const eventsRouter = require('./routes/events');
 app.use('/events', eventsRouter);
 
 app.listen(PORT, HOST);
-console.info('Listening');
+// console.info('Listening');

@@ -1,0 +1,22 @@
+{
+  "name": "unimib-calendar-backend",
+  "version": "1.0.0",
+  "description": "unimib calendar backend",
+  "contributors": [
+    "Fabio Grieco f.grieco5@campus.unimib.it",
+    "Omar Ghetti o.ghetti@campus.unimib.it"
+  ],
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.9.5"
+  },
+  "devDependencies": {
+    "dotenv": "^8.2.0",
+    "nodemon": "^2.0.2"
+  }
+}

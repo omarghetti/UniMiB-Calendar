@@ -25,3 +25,4 @@ const eventsRouter = require('./routes/events');
 app.use('/events', eventsRouter);
 
 app.listen(PORT, HOST);
+console.info("Listening")

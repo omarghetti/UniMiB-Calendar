@@ -12,14 +12,26 @@
     "react-dom": "^16.13.0",
     "react-scripts": "3.4.0"
   },
+  "devDependencies": {
+    "pretty-quick": "^2.0.1",
+    "prettier": "^1.19.1"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "eslint": "eslint --ext .js --ext .jsx src/",
+    "eslint:fix": "eslint --fix --ext .js --ext .jsx src/",
+    "eslint:ci": "eslint --ext .js --ext .jsx src/ --max-warnings=0",
+    "prettier:check": "prettier --check \"src/**/*.{js,jsx,css}\"",
+    "prettier:write": "prettier --write \"src/**/*.{js,jsx,css}\"",
+    "prettier:precommit": "pretty-quick \"src/**/*.{js,jsx,css}\""
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": [
+      "react-app"
+    ]
   },
   "browserslist": {
     "production": [

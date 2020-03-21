@@ -9,7 +9,7 @@
   "scripts": {
     "precommit:frontend": "cd frontend && npm run prettier:precommit && npm run eslint:ci",
     "precommit:backend": "cd backend && npm run prettier:precommit && npm run lint",
-    "precommit": "npm run precommit:backend && npm run precommit:frontend"
+    "precommit": "npm run precommit:backend && npm run precommit:frontend && git add ."
   },
   "devDependencies": {
     "husky": "^4.2.3"

@@ -1,25 +1,19 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import "./App.css";
+import React from "react";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { Login } from "./Login/index";
+import { Calendar } from "./Calendar/index";
 
 function App() {
-  const [data, setData] = useState([]);
-
-  useEffect(() => {
-    const fetchEvents = async () => {
-      const result = await axios("/events");
-      setData(result.data);
-      console.info({ result });
-    };
-    fetchEvents();
-  }, []);
-
   return (
-    <div className="App">
-      {data.map(item => (
-        <li key={item.title}>{item.title}</li>
-      ))}
-    </div>
+    <Router>
+      <div className="App">
+        <Switch>
+          <Route path="/calendar" component={Calendar} />
+          <Route path="/login" component={Login} />
+          <Route path="/" exact component={Login} />
+        </Switch>
+      </div>
+    </Router>
   );
 }
 

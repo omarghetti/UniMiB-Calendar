@@ -12,7 +12,8 @@
     "precommit": "npm run precommit:backend && npm run precommit:frontend && git add ."
   },
   "devDependencies": {
-    "husky": "^4.2.3"
+    "husky": "^4.2.3",
+    "prop-types": "^15.7.2"
   },
   "husky": {
     "hooks": {

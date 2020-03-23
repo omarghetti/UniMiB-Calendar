@@ -1,6 +1,14 @@
 import React from "react";
 import GoogleLogin from "react-google-login";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
+import Modal from "@material-ui/core/Modal";
+
+const style = {
+  background: "#ba0737"
+};
 
 export class Login extends React.Component {
   constructor(props) {
@@ -9,7 +17,8 @@ export class Login extends React.Component {
       isLogged: false,
       name: "",
       imgUrl: "",
-      redirect: false
+      redirect: false,
+      isOpenModal: false
     };
   }
 
@@ -21,7 +30,8 @@ export class Login extends React.Component {
         isLogged: true,
         name: response.profileObj.name,
         imgUrl: response.profileObj.imageUrl,
-        redirect: true
+        redirect: true,
+        isOpenModal: false
       });
       if (redirect) {
         console.log("redirected!");
@@ -35,22 +45,52 @@ export class Login extends React.Component {
       }
     };
     const responseGoogleFailure = response => {
-      console.log(response);
+      this.setState({
+        isLogged: false,
+        name: response.name,
+        imgUrl: response.imgUrl,
+        redirect: false,
+        isOpenModal: true
+      });
+      return (
+        <Modal
+          disablePortal
+          disableEnforceFocus
+          disableAutoFocus
+          open={this.state.isOpenModal}
+        >
+          <div>
+            <h2 id="simple-modal-title">Errore!</h2>
+            <p id="simple-modal-description">Riprova ad effettuare il Login</p>
+          </div>
+        </Modal>
+      );
     };
     return (
-      <Grid container direction="column" justify="center" alignItems="center">
-        <div align="center">
-          <h1>Accedi con il tuo Account di Ateneo</h1>
-          <GoogleLogin
-            clientId="645362289460-ulika5v4o1a96cpfibbv7q73vfoihnr2.apps.googleusercontent.com"
-            buttonText="Login"
-            onSuccess={responseGoogleSuccess}
-            onFailure={responseGoogleFailure}
-            cookiePolicy={"single_host_origin"}
-            isSignedIn={true}
-          />
-        </div>
-      </Grid>
+      <AppBar position="static" style={style}>
+        <Toolbar>
+          <Grid
+            justify="space-between" // Add it here :)
+            container
+            spacing={24}
+          >
+            <Grid item>
+              <Typography variant="h6">UniMiBCalendar</Typography>
+            </Grid>
+
+            <Grid item>
+              <GoogleLogin
+                clientId="645362289460-ulika5v4o1a96cpfibbv7q73vfoihnr2.apps.googleusercontent.com"
+                buttonText="Login"
+                onSuccess={responseGoogleSuccess}
+                onFailure={responseGoogleFailure}
+                cookiePolicy={"single_host_origin"}
+                isSignedIn={true}
+              />
+            </Grid>
+          </Grid>
+        </Toolbar>
+      </AppBar>
     );
   }
 }

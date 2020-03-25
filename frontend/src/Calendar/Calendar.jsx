@@ -6,7 +6,7 @@ import AppBar from "@material-ui/core/AppBar";
 import Avatar from "@material-ui/core/Avatar";
 
 const style = {
-  background: "#ba0737"
+  background: "#93253E"
 };
 
 export class Calendar extends React.Component {
@@ -20,11 +20,21 @@ export class Calendar extends React.Component {
             <Grid item xs={10}>
               <Typography variant="h6">UniMiBCalendar</Typography>
             </Grid>
-            <Grid item container spacing={2} xs={2}>
-              <Grid item>
+            <Grid item container spacing={1} xs={2}>
+              <Grid item xs={2}>
+                <p>
+                  <span />
+                </p>
+              </Grid>
+              <Grid item xs={2}>
+                <p>
+                  <span />
+                </p>
+              </Grid>
+              <Grid item xs={2}>
                 <Avatar alt={location.name} src={location.imgUrl} />
               </Grid>
-              <Grid item>
+              <Grid item xs={6}>
                 <Typography variant="h6">{location.name}</Typography>
               </Grid>
             </Grid>

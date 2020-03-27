@@ -5,8 +5,8 @@ import {
   Route,
   Switch
 } from "react-router-dom";
-import Calendar from "./Calendar/Calendar";
-import Login from "./Login/Login";
+import Calendar from "./components/Calendar/Calendar";
+import Login from "./contexts/Login/Login";
 import { AuthContext } from "./contexts/AuthContext";
 
 const { useState } = require("react");

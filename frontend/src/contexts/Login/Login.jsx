@@ -4,7 +4,7 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import { useHistory, useLocation } from "react-router-dom";
-import { AuthContext } from "../contexts/AuthContext";
+import { AuthContext } from "../AuthContext";
 
 const style = {
   background: "#93253E"
@@ -12,7 +12,7 @@ const style = {
 
 const divStyle = {
   textAlign: "center",
-  "margin-top": "250px"
+  marginTop: "250px"
 };
 
 function Login() {
@@ -52,7 +52,7 @@ function Login() {
         </Toolbar>
       </AppBar>
       <div style={divStyle}>
-        <h1>Accedi Con il Tuo Account di Ateneo</h1>
+        <h1>Accedi con il tuo account di Ateneo</h1>
         <GoogleLogin
           clientId="645362289460-ulika5v4o1a96cpfibbv7q73vfoihnr2.apps.googleusercontent.com"
           buttonText="Login"

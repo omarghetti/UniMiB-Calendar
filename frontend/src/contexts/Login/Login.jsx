@@ -12,7 +12,8 @@ const style = {
 
 const divStyle = {
   textAlign: "center",
-  marginTop: "250px"
+  marginTop: "256px",
+  padding: "16px"
 };
 
 function Login() {
@@ -52,7 +53,10 @@ function Login() {
         </Toolbar>
       </AppBar>
       <div style={divStyle}>
-        <h1>Accedi con il tuo account di Ateneo</h1>
+        <Typography variant="h4">
+          Accedi con il tuo account di Ateneo.
+        </Typography>
+        <br />
         <GoogleLogin
           clientId="645362289460-ulika5v4o1a96cpfibbv7q73vfoihnr2.apps.googleusercontent.com"
           buttonText="Login"

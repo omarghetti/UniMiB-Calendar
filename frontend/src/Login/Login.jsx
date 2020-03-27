@@ -10,6 +10,13 @@ const style = {
   background: "#93253E"
 };
 
+const divStyle = {
+  position: "fixed",
+  "text-align": "center",
+  top: "35%",
+  left: "35%"
+};
+
 export class Login extends React.Component {
   constructor(props) {
     super(props);
@@ -72,30 +79,31 @@ export class Login extends React.Component {
 
   render() {
     return (
-      <AppBar position="static" style={style}>
-        <Toolbar>
-          <Grid
-            justify="space-between" // Add it here :)
-            container
-            spacing={24}
-          >
-            <Grid item>
-              <Typography variant="h6">UniMiBCalendar</Typography>
+      <div>
+        <AppBar position="static" style={style}>
+          <Toolbar>
+            <Grid
+              justify="space-between" // Add it here :)
+              container
+              spacing={24}
+            >
+              <Grid item>
+                <Typography variant="h6">UniMiBCalendar</Typography>
+              </Grid>
             </Grid>
-
-            <Grid item>
-              <GoogleLogin
-                clientId="645362289460-ulika5v4o1a96cpfibbv7q73vfoihnr2.apps.googleusercontent.com"
-                buttonText="Login"
-                onSuccess={this.responseGoogleSuccess}
-                onFailure={this.responseGoogleFailure}
-                cookiePolicy={"single_host_origin"}
-                isSignedIn={true}
-              />
-            </Grid>
-          </Grid>
-        </Toolbar>
-      </AppBar>
+          </Toolbar>
+        </AppBar>
+        <div style={divStyle}>
+          <h1>Accedi Con il Tuo Account di Ateneo</h1>
+          <GoogleLogin
+            clientId="645362289460-ulika5v4o1a96cpfibbv7q73vfoihnr2.apps.googleusercontent.com"
+            buttonText="Login"
+            onSuccess={this.responseGoogleSuccess}
+            onFailure={this.responseGoogleFailure}
+            cookiePolicy={"single_host_origin"}
+          />
+        </div>
+      </div>
     );
   }
 }

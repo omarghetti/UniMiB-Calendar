@@ -12,7 +12,7 @@ const style = {
 export class Calendar extends React.Component {
   render() {
     console.log(this.props);
-    const location = this.props.history.location.state;
+
     return (
       <AppBar position="static" style={style}>
         <Toolbar>
@@ -32,10 +32,15 @@ export class Calendar extends React.Component {
                 </p>
               </Grid>
               <Grid item xs={2}>
-                <Avatar alt={location.name} src={location.imgUrl} />
+                <Avatar
+                  alt={this.props.history.location.state.name}
+                  src={this.props.history.location.state.imgUrl}
+                />
               </Grid>
               <Grid item xs={6}>
-                <Typography variant="h6">{location.name}</Typography>
+                <Typography variant="h6">
+                  {this.props.history.location.state.name}
+                </Typography>
               </Grid>
             </Grid>
           </Grid>

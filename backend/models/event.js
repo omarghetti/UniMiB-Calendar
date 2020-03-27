@@ -3,18 +3,18 @@ const mongoose = require('mongoose');
 const eventSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: true
+    required: true,
   },
   timeStart: {
     type: Date,
     required: true,
-    default: Date.now
+    default: Date.now,
   },
   timeEnd: {
     type: Date,
     required: true,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 module.exports = mongoose.model('Event', eventSchema);

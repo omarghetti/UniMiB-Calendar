@@ -10,7 +10,7 @@ router.get('/', async (req, res) => {
     res.json(events);
   } catch (err) {
     res.status(500).json({
-      message: err.message
+      message: err.message,
     });
   }
 });
@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
 // Create one event
 router.post('/', async (req, res) => {
   const event = new Event({
-    title: req.body.title
+    title: req.body.title,
   });
 
   try {
@@ -26,7 +26,7 @@ router.post('/', async (req, res) => {
     res.status(201).json(newEvent);
   } catch (err) {
     res.status(400).json({
-      message: err.message
+      message: err.message,
     });
   }
 });

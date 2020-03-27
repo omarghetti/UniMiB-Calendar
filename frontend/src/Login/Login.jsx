@@ -3,7 +3,6 @@ import GoogleLogin from "react-google-login";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
 import { useHistory, useLocation } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 
@@ -12,10 +11,8 @@ const style = {
 };
 
 const divStyle = {
-  position: "fixed",
   textAlign: "center",
-  top: "35%",
-  left: "35%"
+  "margin-top": "250px"
 };
 
 function Login() {
@@ -51,15 +48,7 @@ function Login() {
     <Fragment>
       <AppBar position="static" style={style}>
         <Toolbar>
-          <Grid
-            justify="space-between" // Add it here :)
-            container
-            spacing={24}
-          >
-            <Grid item>
-              <Typography variant="h6">UniMiBCalendar</Typography>
-            </Grid>
-          </Grid>
+          <Typography variant="h6">UniMiBCalendar</Typography>
         </Toolbar>
       </AppBar>
       <div style={divStyle}>

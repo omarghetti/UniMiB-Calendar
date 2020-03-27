@@ -1,0 +1,57 @@
+stages:
+  - backend
+  - frontend
+  - deploy
+
+services:
+  - docker:dind
+
+backend validation:
+  stage: backend
+  image: node:12.16.1-alpine
+  script:
+    - cd backend
+    - npm install --no-save
+    - npm run prettier:check
+    - npm run eslint:ci
+    - npm run test:ci
+
+frontend validation:
+  stage: frontend
+  image: node:12.16.1-alpine
+  script:
+    - cd frontend
+    - npm install --no-save
+    - npm run prettier:check
+    - npm run eslint:ci
+    - npm run test:ci
+
+heroku deploy:
+  stage: deploy
+  image: docker:latest
+  only:
+    - develop
+    - master
+  script:
+    - docker login --username=_ --password="$HEROKU_AUTH_TOKEN" registry.heroku.com
+    - docker build -t release .
+    - docker tag release registry.heroku.com/unimib-calendar/web
+    - docker push registry.heroku.com/unimib-calendar/web
+    - apk update && apk add curl
+    - chmod +x ./heroku-container-release.sh
+    - /bin/sh ./heroku-container-release.sh
+
+heroku deploy manual:
+  stage: deploy
+  image: docker:latest
+  only:
+    - /^feature[/].*/
+  when: manual
+  script:
+    - docker login --username=_ --password="$HEROKU_AUTH_TOKEN" registry.heroku.com
+    - docker build -t release .
+    - docker tag release registry.heroku.com/unimib-calendar/web
+    - docker push registry.heroku.com/unimib-calendar/web
+    - apk update && apk add curl
+    - chmod +x ./heroku-container-release.sh
+    - /bin/sh ./heroku-container-release.sh

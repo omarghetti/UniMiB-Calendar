@@ -2,13 +2,16 @@
   "name": "unimib-calendar-root",
   "version": "1.0.0",
   "description": "unimib calendar",
+  "engines": {
+    "node": "13.11.0"
+  },
   "contributors": [
     "Fabio Grieco f.grieco5@campus.unimib.it",
     "Omar Ghetti o.ghetti@campus.unimib.it"
   ],
   "scripts": {
     "precommit:frontend": "cd frontend && npm run prettier:precommit && npm run eslint:ci",
-    "precommit:backend": "cd backend && npm run prettier:precommit && npm run lint",
+    "precommit:backend": "cd backend && npm run prettier:precommit && npm run eslint:ci",
     "precommit": "npm run precommit:backend && npm run precommit:frontend && git add ."
   },
   "devDependencies": {

@@ -7,7 +7,7 @@ function App() {
 
   useEffect(() => {
     const fetchEvents = async () => {
-      const result = await axios("/events");
+      const result = await axios("/api/events/");
       setData(result.data);
       console.info({ result });
     };

@@ -40,9 +40,10 @@ function Login() {
     setUser({
       isAuthenticated: false,
       name: "",
-      avatar: "",
-      failed: true
+      avatar: ""
     });
+
+    console.error("Authentication failed.");
   };
 
   return (

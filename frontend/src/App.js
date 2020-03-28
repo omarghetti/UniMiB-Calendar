@@ -1,24 +1,60 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import "./App.css";
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Redirect,
+  Route,
+  Switch
+} from "react-router-dom";
+import Calendar from "./components/Calendar/Calendar";
+import Login from "./contexts/Login/Login";
+import { AuthContext } from "./contexts/AuthContext";
+
+const { useState } = require("react");
 
 function App() {
-  const [data, setData] = useState([]);
+  const [user, setUser] = useState({
+    isAuthenticated: false,
+    name: "",
+    avatar: ""
+  });
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      const result = await axios("/api/events/");
-      setData(result.data);
-      console.info({ result });
-    };
-    fetchEvents();
-  }, []);
+  function PrivateRoute({ children, ...rest }) {
+    return (
+      <Route
+        {...rest}
+        render={({ location }) =>
+          user.isAuthenticated ? (
+            children
+          ) : (
+            <Redirect
+              to={{
+                pathname: "/login",
+                state: { from: location }
+              }}
+            />
+          )
+        }
+      />
+    );
+  }
 
   return (
     <div className="App">
-      {data.map(item => (
-        <li key={item.title}>{item.title}</li>
-      ))}
+      <AuthContext.Provider value={{ user, setUser }}>
+        <Router>
+          <Switch>
+            <PrivateRoute path="/calendar">
+              <Calendar />
+            </PrivateRoute>
+            <Route path="/login">
+              <Login />
+            </Route>
+            <Route path="/" exact>
+              <Login />
+            </Route>
+          </Switch>
+        </Router>
+      </AuthContext.Provider>
     </div>
   );
 }

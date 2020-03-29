@@ -10,7 +10,8 @@ import Menu from "@material-ui/core/Menu";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
 const style = {
-  background: "#93253E"
+  background: "#93253E",
+  zIndex: 99
 };
 
 const useStyles = makeStyles(theme => ({

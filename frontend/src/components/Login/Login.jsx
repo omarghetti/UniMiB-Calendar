@@ -1,14 +1,9 @@
-import React, { Fragment, useContext } from "react";
+import React, { Fragment, useContext, useEffect } from "react";
 import GoogleLogin from "react-google-login";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import { useHistory, useLocation } from "react-router-dom";
-import { AuthContext } from "../AuthContext";
-
-const style = {
-  background: "#93253E"
-};
+import { AuthContext } from "../../contexts/AuthContext";
+import TopBar from "../TopBar/TopBar";
 
 const divStyle = {
   textAlign: "center",
@@ -19,7 +14,16 @@ const divStyle = {
 function Login() {
   let history = useHistory();
   let location = useLocation();
-  let { setUser } = useContext(AuthContext);
+  let { user, setUser } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (user.isAuthenticated) {
+      history.push({
+        pathname: "/calendar",
+        state: { from: location }
+      });
+    }
+  }, [history, location, user.isAuthenticated]);
 
   const responseGoogleSuccess = response => {
     setUser({
@@ -48,11 +52,7 @@ function Login() {
 
   return (
     <Fragment>
-      <AppBar position="static" style={style}>
-        <Toolbar>
-          <Typography variant="h6">UniMiBCalendar</Typography>
-        </Toolbar>
-      </AppBar>
+      <TopBar />
       <div style={divStyle}>
         <Typography variant="h4">
           Accedi con il tuo account di Ateneo.
@@ -64,6 +64,9 @@ function Login() {
           onSuccess={responseGoogleSuccess}
           onFailure={responseGoogleFailure}
           cookiePolicy={"single_host_origin"}
+          isSignedIn={true}
+          className={"login-button"}
+          disabled={true}
         />
       </div>
     </Fragment>

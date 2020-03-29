@@ -6,7 +6,7 @@ import {
   Switch
 } from "react-router-dom";
 import Calendar from "./components/Calendar/Calendar";
-import Login from "./contexts/Login/Login";
+import Login from "./components/Login/Login";
 import { AuthContext } from "./contexts/AuthContext";
 
 const { useState } = require("react");
@@ -28,7 +28,7 @@ function App() {
           ) : (
             <Redirect
               to={{
-                pathname: "/login",
+                pathname: "/",
                 state: { from: location }
               }}
             />
@@ -46,9 +46,6 @@ function App() {
             <PrivateRoute path="/calendar">
               <Calendar />
             </PrivateRoute>
-            <Route path="/login">
-              <Login />
-            </Route>
             <Route path="/" exact>
               <Login />
             </Route>

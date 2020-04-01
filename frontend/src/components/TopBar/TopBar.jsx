@@ -9,12 +9,11 @@ import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
-const style = {
-  background: "#93253E",
-  zIndex: 99
-};
-
 const useStyles = makeStyles(theme => ({
+  root: {
+    background: theme.palette.primary,
+    zIndex: 99
+  },
   title: {
     flexGrow: 1
   }
@@ -35,7 +34,7 @@ function TopBar(props) {
   };
 
   return (
-    <AppBar position="static" style={style}>
+    <AppBar position="static" className={classes.root}>
       <Toolbar>
         <Typography variant="h6" className={classes.title}>
           UniMiBCalendar

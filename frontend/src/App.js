@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   BrowserRouter as Router,
   Redirect,
@@ -8,8 +8,9 @@ import {
 import Calendar from "./components/Calendar/Calendar";
 import Login from "./components/Login/Login";
 import { AuthContext } from "./contexts/AuthContext";
-
-const { useState } = require("react");
+import { ThemeProvider } from "@material-ui/styles";
+import { CssBaseline } from "@material-ui/core";
+import theme from "./themes/theme";
 
 function App() {
   const [user, setUser] = useState({
@@ -39,20 +40,23 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <AuthContext.Provider value={{ user, setUser }}>
-        <Router>
-          <Switch>
-            <PrivateRoute path="/calendar">
-              <Calendar />
-            </PrivateRoute>
-            <Route path="/" exact>
-              <Login />
-            </Route>
-          </Switch>
-        </Router>
-      </AuthContext.Provider>
-    </div>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <div className="App">
+        <AuthContext.Provider value={{ user, setUser }}>
+          <Router>
+            <Switch>
+              <PrivateRoute path="/calendar">
+                <Calendar />
+              </PrivateRoute>
+              <Route path="/" exact>
+                <Login />
+              </Route>
+            </Switch>
+          </Router>
+        </AuthContext.Provider>
+      </div>
+    </ThemeProvider>
   );
 }
 

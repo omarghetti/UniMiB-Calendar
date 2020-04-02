@@ -3,7 +3,6 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import Container from "@material-ui/core/Container";
-import TopBar from "../TopBar/TopBar";
 import Typography from "@material-ui/core/Typography";
 import { Swipeable } from "react-swipeable";
 
@@ -38,7 +37,6 @@ function Calendar() {
 
   return (
     <Fragment>
-      <TopBar />
       <Container className="calendar-container">
         <Typography variant="h6" align="center">
           {title.toUpperCase()}

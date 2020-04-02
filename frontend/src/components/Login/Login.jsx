@@ -1,9 +1,8 @@
-import React, { Fragment, useContext, useEffect } from "react";
+import React, { Fragment, useEffect } from "react";
 import GoogleLogin from "react-google-login";
 import Typography from "@material-ui/core/Typography";
 import { useHistory, useLocation } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
-import TopBar from "../TopBar/TopBar";
 
 const divStyle = {
   textAlign: "center",
@@ -14,7 +13,7 @@ const divStyle = {
 function Login() {
   let history = useHistory();
   let location = useLocation();
-  let { user, setUser } = useContext(AuthContext);
+  let { user, setUser } = React.useContext(AuthContext);
 
   useEffect(() => {
     if (user.isAuthenticated) {
@@ -52,7 +51,6 @@ function Login() {
 
   return (
     <Fragment>
-      <TopBar />
       <div style={divStyle}>
         <Typography variant="h4">
           Accedi con il tuo account di Ateneo.

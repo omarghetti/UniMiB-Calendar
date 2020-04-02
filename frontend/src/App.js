@@ -11,6 +11,7 @@ import { AuthContext } from "./contexts/AuthContext";
 import { ThemeProvider } from "@material-ui/styles";
 import { CssBaseline } from "@material-ui/core";
 import theme from "./themes/theme";
+import TopBar from "./components/TopBar/TopBar";
 
 function App() {
   const [user, setUser] = useState({
@@ -44,6 +45,7 @@ function App() {
       <CssBaseline />
       <div className="App">
         <AuthContext.Provider value={{ user, setUser }}>
+          <TopBar />
           <Router>
             <Switch>
               <PrivateRoute path="/calendar">

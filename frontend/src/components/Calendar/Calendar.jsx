@@ -1,25 +1,12 @@
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import React, { Fragment, useRef } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import Container from "@material-ui/core/Container";
-import Typography from "@material-ui/core/Typography";
 import { Swipeable } from "react-swipeable";
 
 function Calendar() {
-  const [title, setTitle] = useState("");
   const calendarComponentRef = useRef(null);
-
-  useEffect(() => {
-    updateTitle();
-  }, [calendarComponentRef]);
-
-  function updateTitle() {
-    if (calendarComponentRef.current) {
-      const calendarApi = calendarComponentRef.current.getApi();
-      setTitle(calendarApi.view.title);
-    }
-  }
 
   function previous() {
     if (calendarComponentRef.current) {
@@ -37,21 +24,39 @@ function Calendar() {
 
   return (
     <Fragment>
-      <Container className="calendar-container">
-        <Typography variant="h6" align="center">
-          {title.toUpperCase()}
-        </Typography>
-        <Swipeable
-          onSwipedRight={previous}
-          onSwipedLeft={next}
-          preventDefaultTouchmoveEvent={true}
-        >
+      <Swipeable
+        onSwipedRight={previous}
+        onSwipedLeft={next}
+        preventDefaultTouchmoveEvent={true}
+      >
+        <Container className={"calendar-container"}>
           <FullCalendar
             defaultView="dayGridMonth"
             plugins={[dayGridPlugin, timeGridPlugin]}
             locale="it"
             weekends={false}
-            datesRender={updateTitle}
+            height="parent"
+            titleFormat={{ year: "numeric", month: "long" }}
+            views={{
+              dayGridMonth: {
+                columnHeaderFormat: {
+                  weekday: "narrow"
+                }
+              },
+              timeGridWeek: {
+                columnHeaderFormat: {
+                  weekday: "short",
+                  day: "numeric"
+                }
+              },
+              timeGridDay: {
+                columnHeaderFormat: {
+                  month: "numeric",
+                  weekday: "long",
+                  day: "numeric"
+                }
+              }
+            }}
             events={[
               { title: "event 1", date: "2020-04-01" },
               { title: "event 2", date: "2020-04-02" }
@@ -65,7 +70,7 @@ function Calendar() {
             }}
             header={{
               left: "dayGridMonth,timeGridWeek,timeGridDay",
-              center: "",
+              center: "title",
               right: "prev,next"
             }}
             footer={{
@@ -73,11 +78,10 @@ function Calendar() {
               center: "",
               right: "prev,next"
             }}
-            titleFormat={{ year: "numeric", month: "long" }}
             ref={calendarComponentRef}
           />
-        </Swipeable>
-      </Container>
+        </Container>
+      </Swipeable>
     </Fragment>
   );
 }

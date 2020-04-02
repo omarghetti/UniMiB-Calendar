@@ -37,6 +37,7 @@ function Calendar() {
             weekends={false}
             height="parent"
             titleFormat={{ year: "numeric", month: "long" }}
+            allDayText={"Tutto il giorno"}
             views={{
               dayGridMonth: {
                 columnHeaderFormat: {

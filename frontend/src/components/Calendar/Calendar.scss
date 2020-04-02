@@ -25,6 +25,22 @@
   height: 100vh;
 }
 
+.fc
+  .fc-view.fc-timeGridWeek-view
+  thead.fc-head
+  td.fc-head-container
+  th.fc-day-header {
+  text-transform: uppercase;
+}
+
+.fc
+  .fc-view.fc-timeGridDay-view
+  thead.fc-head
+  td.fc-head-container
+  th.fc-day-header {
+  text-transform: uppercase;
+}
+
 // mobile
 @media screen and (max-device-width: 450px) {
   .calendar-container.MuiContainer-root {

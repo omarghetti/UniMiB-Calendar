@@ -16,7 +16,8 @@ const useStyles = makeStyles(theme => ({
   },
   title: {
     flexGrow: 1
-  }
+  },
+  offset: theme.mixins.toolbar
 }));
 
 function TopBar(props) {
@@ -34,50 +35,53 @@ function TopBar(props) {
   };
 
   return (
-    <AppBar position="static" className={classes.root}>
-      <Toolbar>
-        <Typography variant="h6" className={classes.title}>
-          UniMiBCalendar
-        </Typography>
-        <div>
-          <IconButton
-            aria-label="account of current user"
-            aria-controls="menu-appbar"
-            aria-haspopup="true"
-            onClick={handleMenu}
-            color="inherit"
-          >
-            {user.avatar ? (
-              <Avatar src={user.avatar} alt={user.name} />
-            ) : (
-              <div />
-            )}
-          </IconButton>
-          <Menu
-            id="menu-appbar"
-            anchorEl={anchorEl}
-            anchorOrigin={{
-              vertical: "top",
-              horizontal: "right"
-            }}
-            keepMounted
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right"
-            }}
-            open={open}
-            onClose={handleClose}
-          >
-            <MenuItem dense onClick={handleClose}>
-              Profilo
-            </MenuItem>
-            <MenuItem dense onClick={handleClose}>
-              Logout
-            </MenuItem>
-          </Menu>
-        </div>
-      </Toolbar>
-    </AppBar>
+    <React.Fragment>
+      <AppBar position="fixed" className={classes.root}>
+        <Toolbar>
+          <Typography variant="h6" className={classes.title}>
+            UniMiBCalendar
+          </Typography>
+          <div>
+            <IconButton
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleMenu}
+              color="inherit"
+            >
+              {user.avatar ? (
+                <Avatar src={user.avatar} alt={user.name} />
+              ) : (
+                <div />
+              )}
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorEl}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right"
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right"
+              }}
+              open={open}
+              onClose={handleClose}
+            >
+              <MenuItem dense onClick={handleClose}>
+                Profilo
+              </MenuItem>
+              <MenuItem dense onClick={handleClose}>
+                Logout
+              </MenuItem>
+            </Menu>
+          </div>
+        </Toolbar>
+      </AppBar>
+      <div className={classes.offset} />
+    </React.Fragment>
   );
 }
 

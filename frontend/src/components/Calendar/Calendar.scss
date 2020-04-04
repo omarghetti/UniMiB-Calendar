@@ -23,6 +23,7 @@
 
 .calendar-container.MuiContainer-root {
   height: 100vh;
+  padding-top: 8px;
 }
 
 .fc
@@ -46,6 +47,7 @@
   .calendar-container.MuiContainer-root {
     padding-left: 0;
     padding-right: 0;
+    padding-top: 16px;
   }
 
   .fc button.fc-prev-button,

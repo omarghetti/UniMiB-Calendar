@@ -1,19 +1,30 @@
 const mongoose = require('mongoose');
+const EventType = require('./eventType');
 
 const eventSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
+    default: false,
   },
-  timeStart: {
+  type: {
+    type: EventType.schema,
+    required: false,
+  },
+  start: {
     type: Date,
-    required: true,
+    required: false,
     default: Date.now,
   },
-  timeEnd: {
+  end: {
     type: Date,
-    required: true,
-    default: Date.now,
+    required: false,
+    default: () => Date.now() + 7 * 24 * 60 * 60 * 1000,
+  },
+  allDay: {
+    type: Boolean,
+    required: false,
+    default: false,
   },
 });
 

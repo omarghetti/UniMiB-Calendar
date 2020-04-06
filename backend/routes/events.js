@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
 // Create one event
 router.post('/', async (req, res) => {
   const event = new Event({
-    title: req.body.title,
+    ...req.body,
   });
 
   try {

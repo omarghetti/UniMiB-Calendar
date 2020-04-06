@@ -1,12 +1,25 @@
-import React, { Fragment, useRef } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import Container from "@material-ui/core/Container";
 import { Swipeable } from "react-swipeable";
+import axios from "axios";
 
 function Calendar() {
   const calendarComponentRef = useRef(null);
+
+  const [events, setEvents] = useState([]);
+
+  async function fetchEvents() {
+    const response = await axios("/api/events");
+    setEvents(response.data);
+    console.info({ response });
+  }
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
 
   function previous() {
     if (calendarComponentRef.current) {
@@ -58,10 +71,7 @@ function Calendar() {
                 }
               }
             }}
-            events={[
-              { title: "event 1", date: "2020-04-01" },
-              { title: "event 2", date: "2020-04-02" }
-            ]}
+            events={events}
             buttonText={{
               today: "Oggi",
               month: "Mese",

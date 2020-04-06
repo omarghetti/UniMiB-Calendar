@@ -19,7 +19,7 @@ const eventSchema = new mongoose.Schema({
   end: {
     type: Date,
     required: false,
-    default: () => Date.now() + 7 * 24 * 60 * 60 * 1000,
+    default: () => Date.now() + 1 * 60 * 60 * 1000,
   },
   allDay: {
     type: Boolean,

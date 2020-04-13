@@ -18,7 +18,7 @@ function Login() {
   useEffect(() => {
     if (user.isAuthenticated) {
       history.push({
-        pathname: location?.state.from.pathname,
+        pathname: location?.state?.from.pathname,
         state: { from: location }
       });
     }

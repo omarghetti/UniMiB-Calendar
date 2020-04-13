@@ -6,7 +6,7 @@ const Event = require('../models/event');
 // Get all events
 router.get('/', async (req, res) => {
   try {
-    const events = await Event.find();
+    const events = await Event.find().select('_id title start end allDay type');
     res.json(events);
   } catch (err) {
     res.status(500).json({

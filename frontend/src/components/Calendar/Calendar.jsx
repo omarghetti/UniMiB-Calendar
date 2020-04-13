@@ -72,6 +72,7 @@ function Calendar() {
               }
             }}
             events={events}
+            eventClick={({ event }) => console.log({ event })}
             buttonText={{
               today: "Oggi",
               month: "Mese",

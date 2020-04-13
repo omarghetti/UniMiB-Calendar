@@ -18,7 +18,7 @@ function Login() {
   useEffect(() => {
     if (user.isAuthenticated) {
       history.push({
-        pathname: "/calendar",
+        pathname: location?.state.from.pathname,
         state: { from: location }
       });
     }

@@ -12,6 +12,7 @@ import { ThemeProvider } from "@material-ui/styles";
 import { CssBaseline } from "@material-ui/core";
 import theme from "./themes/theme";
 import TopBar from "./components/TopBar/TopBar";
+import EventDetail from "./components/EventDetail/EventDetail";
 
 function App() {
   const [user, setUser] = useState({
@@ -48,8 +49,11 @@ function App() {
           <TopBar />
           <Router>
             <Switch>
-              <PrivateRoute path="/calendar">
+              <PrivateRoute path="/calendar" exact>
                 <Calendar />
+              </PrivateRoute>
+              <PrivateRoute path="/calendar/:eventId">
+                <EventDetail />
               </PrivateRoute>
               <Route path="/" exact>
                 <Login />

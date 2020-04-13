@@ -44,8 +44,32 @@ function EventDetail() {
     fetchEvent();
   }, [eventId]);
 
-  function formatDate(date) {
-    return DateTime.fromISO(date).toLocaleString(DateTime.DATETIME_MED);
+  function renderTimeInterval() {
+    return R.cond([
+      [
+        R.always(true),
+        () =>
+          R.join(
+            " - ",
+            R.uniq([
+              `${formatDateInterval(event.start, DateTime.DATE_FULL)}`,
+              `${formatDateInterval(event.end, DateTime.DATE_FULL)}`
+            ])
+          )
+      ],
+      [
+        R.T,
+        () =>
+          `${formatDateInterval(
+            event.start,
+            DateTime.DATETIME_MED
+          )} - ${formatDateInterval(event.end, DateTime.DATETIME_MED)}`
+      ]
+    ])(event.allDay);
+  }
+
+  function formatDateInterval(date, preset) {
+    return DateTime.fromISO(date).toLocaleString(preset);
   }
 
   function formatValue(value, emptyPlaceholder) {
@@ -68,7 +92,7 @@ function EventDetail() {
       <Typography variant="h4">{event.title}</Typography>
       <Typography variant="h6" className={classes.time}>
         <TimeIcon />
-        &nbsp;{`${formatDate(event.start)} - ${formatDate(event.end)}`}
+        &nbsp;{renderTimeInterval()}
       </Typography>
 
       <List className={classes.root}>

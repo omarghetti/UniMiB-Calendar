@@ -28,8 +28,7 @@ function Calendar() {
   let history = useHistory();
   let location = useLocation();
   const classes = useStyles();
-  let { user } = useContext(AuthContext);
-  let { setUser } = useContext(AuthContext);
+  let { user, setUser } = useContext(AuthContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
@@ -94,7 +93,7 @@ function Calendar() {
             </MenuItem>
             <MenuItem dense onClick={handleClose}>
               <GoogleLogout
-                clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
+                clientId="645362289460-ulika5v4o1a96cpfibbv7q73vfoihnr2.apps.googleusercontent.com"
                 buttonText="Logout"
                 onLogoutSuccess={Logout}
               />

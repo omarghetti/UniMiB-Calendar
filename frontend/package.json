@@ -19,6 +19,9 @@
     "react-test-renderer": "^16.13.1"
   },
   "devDependencies": {
+    "@material-ui/styles": "^4.9.10",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.2",
     "eslint-config-prettier": "^6.10.1",
     "prettier": "^1.19.1",
     "pretty-quick": "^2.0.1"

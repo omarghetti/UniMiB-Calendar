@@ -35,7 +35,9 @@ function Login() {
     });
 
     axios.defaults.headers.common["Authorization"] = response.tokenId;
-    console.log("redirected!");
+
+    if (process.env.NODE_ENV === "development")
+      console.info("Token id: ", response.tokenId);
 
     history.push({
       pathname: "/calendar",

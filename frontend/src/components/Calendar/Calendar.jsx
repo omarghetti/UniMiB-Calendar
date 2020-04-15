@@ -54,7 +54,7 @@ function Calendar() {
   }
 
   function renderEvent(info) {
-    console.info({ info });
+    // handle render event
   }
 
   return (

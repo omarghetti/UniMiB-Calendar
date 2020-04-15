@@ -16,14 +16,21 @@ import axios from "axios";
 import * as R from "ramda";
 import { DateTime } from "luxon";
 import Typography from "@material-ui/core/Typography";
+import IconButton from "@material-ui/core/IconButton";
+import { ArrowBack } from "@material-ui/icons";
+import Box from "@material-ui/core/Box";
+import { mapTypeToLabel } from "../../utils/eventUtils";
 
 const useStyles = makeStyles(theme => ({
+  header: {
+    flexGrow: 1
+  },
   time: {
     display: "flex",
     alignItems: "center",
     color: theme.palette.text.secondary
   },
-  root: {
+  detail: {
     width: "100%",
     backgroundColor: theme.palette.background.paper
   }
@@ -87,20 +94,39 @@ function EventDetail() {
     );
   }
 
-  return (
-    <Container>
-      <Typography variant="h4">{event.title}</Typography>
-      <Typography variant="h6" className={classes.time}>
-        <TimeIcon />
-        &nbsp;{renderTimeInterval()}
-      </Typography>
+  function renderHeader() {
+    return (
+      <Box display="flex" flexDirection="row" justifyContent="flex-start">
+        <Box
+          pt={1}
+          pb={1}
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+        >
+          <IconButton color="primary" aria-label="back">
+            <ArrowBack fontSize="large" />
+          </IconButton>
+        </Box>
+        <Box p={1}>
+          <Typography variant="h5">{event.title}</Typography>
+          <Typography variant="h6" className={classes.time}>
+            <TimeIcon />
+            &nbsp;{renderTimeInterval()}
+          </Typography>
+        </Box>
+      </Box>
+    );
+  }
 
-      <List className={classes.root}>
+  function renderDetail() {
+    return (
+      <List className={classes.detail}>
         <ListItem>
           <ListItemAvatar>
             <EventIcon />
           </ListItemAvatar>
-          <ListItemText primary="Tipo" secondary={event.type} />
+          <ListItemText primary="Tipo" secondary={mapTypeToLabel[event.type]} />
         </ListItem>
         <ListItem>
           <ListItemAvatar>
@@ -142,6 +168,13 @@ function EventDetail() {
           />
         </ListItem>
       </List>
+    );
+  }
+
+  return (
+    <Container>
+      {renderHeader()}
+      {renderDetail()}
     </Container>
   );
 }

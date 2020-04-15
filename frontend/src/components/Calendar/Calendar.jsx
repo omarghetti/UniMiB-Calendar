@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import { GoogleLogout } from "react-google-login";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import AppBar from "@material-ui/core/AppBar";
@@ -8,20 +9,26 @@ import MenuItem from "@material-ui/core/MenuItem";
 import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import PersonIcon from "@material-ui/icons/Person";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import { useHistory, useLocation } from "react-router-dom";
 
 const style = {
   background: "#93253E"
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   title: {
     flexGrow: 1
   }
 }));
 
-function Calendar(props) {
+function Calendar() {
+  let history = useHistory();
+  let location = useLocation();
   const classes = useStyles();
-  let { user } = useContext(AuthContext);
+  let { user, setUser } = useContext(AuthContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
@@ -31,6 +38,20 @@ function Calendar(props) {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const Logout = () => {
+    setUser({
+      isAuthenticated: false,
+      name: "",
+      avatar: ""
+    });
+    console.log("redirected!");
+
+    history.push({
+      pathname: "/login",
+      state: { from: location }
+    });
   };
 
   return (
@@ -65,10 +86,17 @@ function Calendar(props) {
             onClose={handleClose}
           >
             <MenuItem dense onClick={handleClose}>
-              Profilo
+              <ListItemIcon>
+                <PersonIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText primary="Profilo" />
             </MenuItem>
             <MenuItem dense onClick={handleClose}>
-              Logout
+              <GoogleLogout
+                clientId="645362289460-ulika5v4o1a96cpfibbv7q73vfoihnr2.apps.googleusercontent.com"
+                buttonText="Logout"
+                onLogoutSuccess={Logout}
+              />
             </MenuItem>
           </Menu>
         </div>

@@ -58,7 +58,7 @@ function EventDetail() {
   function renderTimeInterval() {
     return R.cond([
       [
-        R.always(true),
+        R.always(event.allDay),
         () =>
           R.join(
             " - ",
@@ -76,7 +76,7 @@ function EventDetail() {
             DateTime.DATETIME_MED
           )} - ${formatDateInterval(event.end, DateTime.DATETIME_MED)}`
       ]
-    ])(event.allDay);
+    ])();
   }
 
   function formatDateInterval(date, preset) {

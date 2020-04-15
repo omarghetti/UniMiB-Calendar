@@ -6,6 +6,7 @@ import Container from "@material-ui/core/Container";
 import { Swipeable } from "react-swipeable";
 import axios from "axios";
 import { useHistory, useLocation } from "react-router-dom";
+import { typeMapper } from "../../utils/eventUtils";
 
 function Calendar() {
   let location = useLocation();
@@ -16,8 +17,18 @@ function Calendar() {
   const [events, setEvents] = useState([]);
 
   async function fetchEvents() {
+    function addEventColor(e) {
+      const styledEvent = e;
+      const color = typeMapper[e.type].color;
+      styledEvent.backgroundColor = color;
+      styledEvent.borderColor = color;
+      return styledEvent;
+    }
+
     const response = await axios("/api/events");
-    setEvents(response.data);
+    let events = response.data;
+    events = events.map(addEventColor);
+    setEvents(events);
   }
 
   useEffect(() => {
@@ -40,6 +51,10 @@ function Calendar() {
 
   function handleEventClick({ event }) {
     history.push(`${location.pathname}/${event.extendedProps._id}`);
+  }
+
+  function renderEvent(info) {
+    console.info({ info });
   }
 
   return (
@@ -79,6 +94,7 @@ function Calendar() {
               }
             }}
             events={events}
+            eventRender={renderEvent}
             eventClick={handleEventClick}
             buttonText={{
               today: "Oggi",

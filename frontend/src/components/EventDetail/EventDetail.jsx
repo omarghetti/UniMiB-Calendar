@@ -19,7 +19,7 @@ import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import { ArrowBack } from "@material-ui/icons";
 import Box from "@material-ui/core/Box";
-import { mapTypeToLabel } from "../../utils/eventUtils";
+import { typeMapper } from "../../utils/eventUtils";
 import Skeleton from "@material-ui/lab/Skeleton";
 import { renderWhenReady } from "../../utils/renderUtils";
 
@@ -154,7 +154,7 @@ function EventDetail() {
             secondary={renderWhenReady(
               !isFetching,
               <Skeleton variant="text" width={270} />,
-              mapTypeToLabel[event.type]
+              typeMapper[event.type]?.label
             )}
           />
         </ListItem>

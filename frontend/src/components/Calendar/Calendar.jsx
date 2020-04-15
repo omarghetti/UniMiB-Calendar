@@ -25,7 +25,7 @@ function Calendar() {
       return styledEvent;
     }
 
-    const response = await axios("/api/events");
+    const response = await axios(`/api/events`);
     let events = response.data;
     events = events.map(addEventColor);
     setEvents(events);

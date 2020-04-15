@@ -3,6 +3,7 @@ import GoogleLogin from "react-google-login";
 import Typography from "@material-ui/core/Typography";
 import { useHistory, useLocation } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
+import axios from "axios";
 
 const divStyle = {
   textAlign: "center",
@@ -28,9 +29,12 @@ function Login() {
     setUser({
       isAuthenticated: true,
       name: response.profileObj.name,
-      avatar: response.profileObj.imageUrl
+      email: response.profileObj.email,
+      avatar: response.profileObj.imageUrl,
+      tokenId: response.tokenId
     });
 
+    axios.defaults.headers.common["Authorization"] = response.tokenId;
     console.log("redirected!");
 
     history.push({

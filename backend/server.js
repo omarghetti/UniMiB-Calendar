@@ -28,8 +28,9 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'ui')));
 
 const eventsRouter = require('./routes/events');
+const { verifyAuth } = require('./utils/authUtils');
 
-app.use('/api/events', eventsRouter);
+app.use('/api/events', verifyAuth, eventsRouter);
 
 app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, 'ui', 'index.html'));

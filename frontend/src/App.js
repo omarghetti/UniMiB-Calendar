@@ -13,6 +13,7 @@ import { CssBaseline } from "@material-ui/core";
 import theme from "./themes/theme";
 import TopBar from "./components/TopBar/TopBar";
 import EventDetail from "./components/EventDetail/EventDetail";
+import ErrorDisplayer from "./components/ErrorDisplayer/ErrorDisplayer";
 
 function App() {
   const [user, setUser] = useState({
@@ -57,6 +58,9 @@ function App() {
               </PrivateRoute>
               <Route path="/" exact>
                 <Login />
+              </Route>
+              <Route path="/error/:errorCode" exact>
+                <ErrorDisplayer />
               </Route>
             </Switch>
           </Router>

@@ -47,13 +47,19 @@ function EventDetail() {
 
   useEffect(() => {
     async function fetchEvent() {
-      const response = await axios(`/api/events/${eventId}`);
-      setEvent(response.data);
-      setIsFetching(false);
+      try {
+        const response = await axios(`/api/events/${eventId}`);
+        setEvent(response.data);
+      } catch (e) {
+        debugger;
+        history.push(`/error/${e.response.status}`);
+      } finally {
+        setIsFetching(false);
+      }
     }
 
     fetchEvent();
-  }, [eventId]);
+  }, [eventId, history]);
 
   function renderTimeInterval() {
     return R.cond([

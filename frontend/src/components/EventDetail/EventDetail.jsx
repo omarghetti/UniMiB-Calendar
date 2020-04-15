@@ -96,12 +96,11 @@ function EventDetail() {
     ])(value);
   }
 
-  function formatValues(list, emptyPlaceholder) {
-    return R.reduce(
-      (acc, val) => acc.concat(`, ${val}`),
-      [emptyPlaceholder],
-      list
-    );
+  function formatValues(values, emptyPlaceholder) {
+    return R.cond([
+      [R.isEmpty, () => emptyPlaceholder],
+      [R.T, R.join(", ")]
+    ])(values);
   }
 
   function handleBackClick() {
@@ -173,7 +172,7 @@ function EventDetail() {
             secondary={renderWhenReady(
               !isFetching,
               <Skeleton variant="text" width={270} />,
-              formatValues(event.participants, "Tu")
+              formatValues(event.participants, "")
             )}
           />
         </ListItem>

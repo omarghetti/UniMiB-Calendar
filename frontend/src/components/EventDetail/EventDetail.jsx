@@ -11,7 +11,7 @@ import PlaceIcon from "@material-ui/icons/Place";
 import NotesIcon from "@material-ui/icons/Notes";
 import AttachmentIcon from "@material-ui/icons/AttachFile";
 import ListItemText from "@material-ui/core/ListItemText";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import axios from "axios";
 import * as R from "ramda";
 import { DateTime } from "luxon";
@@ -20,6 +20,8 @@ import IconButton from "@material-ui/core/IconButton";
 import { ArrowBack } from "@material-ui/icons";
 import Box from "@material-ui/core/Box";
 import { mapTypeToLabel } from "../../utils/eventUtils";
+import Skeleton from "@material-ui/lab/Skeleton";
+import { renderWhenReady } from "../../utils/renderUtils";
 
 const useStyles = makeStyles(theme => ({
   header: {
@@ -38,14 +40,16 @@ const useStyles = makeStyles(theme => ({
 
 function EventDetail() {
   const classes = useStyles();
+  const history = useHistory();
   let { eventId } = useParams();
   const [event, setEvent] = useState({ participants: [], attachments: [] });
+  const [isFetching, setIsFetching] = useState(true);
 
   useEffect(() => {
     async function fetchEvent() {
       const response = await axios(`/api/events/${eventId}`);
       setEvent(response.data);
-      console.info({ response });
+      setIsFetching(false);
     }
 
     fetchEvent();
@@ -94,6 +98,10 @@ function EventDetail() {
     );
   }
 
+  function handleBackClick() {
+    history.push("/calendar");
+  }
+
   function renderHeader() {
     return (
       <Box display="flex" flexDirection="row" justifyContent="flex-start">
@@ -104,15 +112,30 @@ function EventDetail() {
           flexDirection="column"
           justifyContent="center"
         >
-          <IconButton color="primary" aria-label="back">
+          <IconButton
+            color="primary"
+            aria-label="back"
+            onClick={handleBackClick}
+          >
             <ArrowBack fontSize="large" />
           </IconButton>
         </Box>
         <Box p={1}>
-          <Typography variant="h5">{event.title}</Typography>
+          <Typography variant="h5">
+            {renderWhenReady(
+              !isFetching,
+              <Skeleton variant="text" width={270} />,
+              event.title
+            )}
+          </Typography>
           <Typography variant="h6" className={classes.time}>
             <TimeIcon />
-            &nbsp;{renderTimeInterval()}
+            &nbsp;
+            {renderWhenReady(
+              !isFetching,
+              <Skeleton variant="text" width={270} />,
+              renderTimeInterval()
+            )}
           </Typography>
         </Box>
       </Box>
@@ -126,7 +149,14 @@ function EventDetail() {
           <ListItemAvatar>
             <EventIcon />
           </ListItemAvatar>
-          <ListItemText primary="Tipo" secondary={mapTypeToLabel[event.type]} />
+          <ListItemText
+            primary="Tipo"
+            secondary={renderWhenReady(
+              !isFetching,
+              <Skeleton variant="text" width={270} />,
+              mapTypeToLabel[event.type]
+            )}
+          />
         </ListItem>
         <ListItem>
           <ListItemAvatar>
@@ -134,7 +164,11 @@ function EventDetail() {
           </ListItemAvatar>
           <ListItemText
             primary="Partecipanti"
-            secondary={formatValues(event.participants, "Tu")}
+            secondary={renderWhenReady(
+              !isFetching,
+              <Skeleton variant="text" width={270} />,
+              formatValues(event.participants, "Tu")
+            )}
           />
         </ListItem>
         <ListItem>
@@ -143,9 +177,10 @@ function EventDetail() {
           </ListItemAvatar>
           <ListItemText
             primary="Luogo"
-            secondary={formatValue(
-              event.attachments,
-              "Nessun luogo specificato"
+            secondary={renderWhenReady(
+              !isFetching,
+              <Skeleton variant="text" width={270} />,
+              formatValue(event.attachments, "Nessun luogo specificato")
             )}
           />
         </ListItem>
@@ -155,7 +190,11 @@ function EventDetail() {
           </ListItemAvatar>
           <ListItemText
             primary="Allegati"
-            secondary={formatValues(event.attachments, "Nessun allegato")}
+            secondary={renderWhenReady(
+              !isFetching,
+              <Skeleton variant="text" width={270} />,
+              formatValues(event.attachments, "Nessun allegato")
+            )}
           />
         </ListItem>
         <ListItem>
@@ -164,7 +203,11 @@ function EventDetail() {
           </ListItemAvatar>
           <ListItemText
             primary="Note"
-            secondary={formatValue(event.notes, "Nessuna nota")}
+            secondary={renderWhenReady(
+              !isFetching,
+              <Skeleton variant="text" width={270} />,
+              formatValue(event.notes, "Nessuna nota")
+            )}
           />
         </ListItem>
       </List>

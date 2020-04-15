@@ -5,8 +5,12 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import Container from "@material-ui/core/Container";
 import { Swipeable } from "react-swipeable";
 import axios from "axios";
+import { useHistory, useLocation } from "react-router-dom";
 
 function Calendar() {
+  let location = useLocation();
+  let history = useHistory();
+
   const calendarComponentRef = useRef(null);
 
   const [events, setEvents] = useState([]);
@@ -14,7 +18,6 @@ function Calendar() {
   async function fetchEvents() {
     const response = await axios("/api/events");
     setEvents(response.data);
-    console.info({ response });
   }
 
   useEffect(() => {
@@ -33,6 +36,10 @@ function Calendar() {
       const calendarApi = calendarComponentRef.current.getApi();
       calendarApi.next();
     }
+  }
+
+  function handleEventClick({ event }) {
+    history.push(`${location.pathname}/${event.extendedProps._id}`);
   }
 
   return (
@@ -72,7 +79,7 @@ function Calendar() {
               }
             }}
             events={events}
-            eventClick={({ event }) => console.log({ event })}
+            eventClick={handleEventClick}
             buttonText={{
               today: "Oggi",
               month: "Mese",

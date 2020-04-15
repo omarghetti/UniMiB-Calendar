@@ -42,6 +42,10 @@
   text-transform: uppercase;
 }
 
+.fc a.fc-event {
+  cursor: pointer;
+}
+
 // mobile
 @media screen and (max-device-width: 450px) {
   .calendar-container.MuiContainer-root {

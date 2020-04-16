@@ -14,7 +14,7 @@ describe("eventUtils", () => {
       };
 
       expect(getFormattedTimeInterval(event)).toEqual(
-        "Apr 20, 2020, 12:00 PM - Apr 21, 2020, 1:00 PM"
+        "20 apr 2020, 12:00 - 21 apr 2020, 13:00"
       );
     });
 
@@ -25,7 +25,7 @@ describe("eventUtils", () => {
         allDay: true
       };
 
-      expect(getFormattedTimeInterval(event)).toEqual("April 20, 2020");
+      expect(getFormattedTimeInterval(event)).toEqual("20 aprile 2020");
     });
 
     it("should return date without time if allDay is true (multiple days)", () => {
@@ -36,7 +36,7 @@ describe("eventUtils", () => {
       };
 
       expect(getFormattedTimeInterval(event)).toEqual(
-        "April 20, 2020 - April 22, 2020"
+        "20 aprile 2020 - 22 aprile 2020"
       );
     });
   });

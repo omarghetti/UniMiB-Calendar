@@ -20,7 +20,9 @@ export const typeMapper = {
 };
 
 function formatDateInterval(date, preset) {
-  return DateTime.fromISO(date).toLocaleString(preset);
+  return DateTime.fromISO(date)
+    .setLocale("it")
+    .toLocaleString(preset);
 }
 
 export function getFormattedTimeInterval(event) {

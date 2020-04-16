@@ -56,6 +56,11 @@
       "prettier"
     ]
   },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}"
+    ]
+  },
   "browserslist": {
     "production": [
       ">0.2%",

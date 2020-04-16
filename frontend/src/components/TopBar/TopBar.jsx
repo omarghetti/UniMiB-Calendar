@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
   offset: theme.mixins.toolbar
 }));
 
-function TopBar(props) {
+function TopBar() {
   const classes = useStyles();
   let { user } = useContext(AuthContext);
   const [anchorEl, setAnchorEl] = React.useState(null);

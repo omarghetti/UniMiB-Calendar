@@ -13,13 +13,16 @@ import AttachmentIcon from "@material-ui/icons/AttachFile";
 import ListItemText from "@material-ui/core/ListItemText";
 import { useHistory, useParams } from "react-router-dom";
 import axios from "axios";
-import * as R from "ramda";
-import { DateTime } from "luxon";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import { ArrowBack } from "@material-ui/icons";
 import Box from "@material-ui/core/Box";
-import { typeMapper } from "../../utils/eventUtils";
+import {
+  getFormattedPropertyValue,
+  getFormattedPropertyValues,
+  getFormattedTimeInterval,
+  typeMapper
+} from "../../utils/eventUtils";
 import Skeleton from "@material-ui/lab/Skeleton";
 import { renderWhenReady } from "../../utils/renderUtils";
 
@@ -60,48 +63,6 @@ function EventDetail() {
     fetchEvent();
   }, [eventId, history]);
 
-  function renderTimeInterval() {
-    return R.cond([
-      [
-        R.always(event.allDay),
-        () =>
-          R.join(
-            " - ",
-            R.uniq([
-              `${formatDateInterval(event.start, DateTime.DATE_FULL)}`,
-              `${formatDateInterval(event.end, DateTime.DATE_FULL)}`
-            ])
-          )
-      ],
-      [
-        R.T,
-        () =>
-          `${formatDateInterval(
-            event.start,
-            DateTime.DATETIME_MED
-          )} - ${formatDateInterval(event.end, DateTime.DATETIME_MED)}`
-      ]
-    ])();
-  }
-
-  function formatDateInterval(date, preset) {
-    return DateTime.fromISO(date).toLocaleString(preset);
-  }
-
-  function formatValue(value, emptyPlaceholder) {
-    return R.cond([
-      [R.isEmpty, () => emptyPlaceholder],
-      [R.T, R.identity]
-    ])(value);
-  }
-
-  function formatValues(values, emptyPlaceholder) {
-    return R.cond([
-      [R.isEmpty, () => emptyPlaceholder],
-      [R.T, R.join(", ")]
-    ])(values);
-  }
-
   function handleBackClick() {
     history.push("/calendar");
   }
@@ -138,7 +99,7 @@ function EventDetail() {
             {renderWhenReady(
               !isFetching,
               <Skeleton variant="text" width={270} />,
-              renderTimeInterval()
+              getFormattedTimeInterval(event)
             )}
           </Typography>
         </Box>
@@ -171,7 +132,7 @@ function EventDetail() {
             secondary={renderWhenReady(
               !isFetching,
               <Skeleton variant="text" width={270} />,
-              formatValues(event.participants, "")
+              getFormattedPropertyValues(event.participants, "")
             )}
           />
         </ListItem>
@@ -184,7 +145,10 @@ function EventDetail() {
             secondary={renderWhenReady(
               !isFetching,
               <Skeleton variant="text" width={270} />,
-              formatValue(event.attachments, "Nessun luogo specificato")
+              getFormattedPropertyValue(
+                event.attachments,
+                "Nessun luogo specificato"
+              )
             )}
           />
         </ListItem>
@@ -197,7 +161,7 @@ function EventDetail() {
             secondary={renderWhenReady(
               !isFetching,
               <Skeleton variant="text" width={270} />,
-              formatValues(event.attachments, "Nessun allegato")
+              getFormattedPropertyValues(event.attachments, "Nessun allegato")
             )}
           />
         </ListItem>
@@ -210,7 +174,7 @@ function EventDetail() {
             secondary={renderWhenReady(
               !isFetching,
               <Skeleton variant="text" width={270} />,
-              formatValue(event.notes, "Nessuna nota")
+              getFormattedPropertyValue(event.notes, "Nessuna nota")
             )}
           />
         </ListItem>

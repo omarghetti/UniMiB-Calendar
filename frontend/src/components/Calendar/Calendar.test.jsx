@@ -14,8 +14,6 @@ jest.mock("react-router-dom", () => ({
   })
 }));
 
-jest.mock("axios");
-
 describe("Calendar component", () => {
   it("renders without crashing", () => {
     mount(

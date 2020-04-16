@@ -1,107 +1,126 @@
-import React, { useContext } from "react";
-import { GoogleLogout } from "react-google-login";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import AppBar from "@material-ui/core/AppBar";
-import Avatar from "@material-ui/core/Avatar";
-import { AuthContext } from "../../contexts/AuthContext";
-import MenuItem from "@material-ui/core/MenuItem";
-import IconButton from "@material-ui/core/IconButton";
-import Menu from "@material-ui/core/Menu";
-import makeStyles from "@material-ui/core/styles/makeStyles";
-import PersonIcon from "@material-ui/icons/Person";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
+import React, { Fragment, useEffect, useRef, useState } from "react";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import Container from "@material-ui/core/Container";
+import { Swipeable } from "react-swipeable";
+import axios from "axios";
 import { useHistory, useLocation } from "react-router-dom";
-
-const style = {
-  background: "#93253E"
-};
-
-const useStyles = makeStyles(() => ({
-  title: {
-    flexGrow: 1
-  }
-}));
+import { typeMapper } from "../../utils/eventUtils";
+import * as R from "ramda";
 
 function Calendar() {
-  let history = useHistory();
   let location = useLocation();
-  const classes = useStyles();
-  let { user, setUser } = useContext(AuthContext);
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
+  let history = useHistory();
 
-  const handleMenu = event => {
-    setAnchorEl(event.currentTarget);
-  };
+  const calendarComponentRef = useRef(null);
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const [events, setEvents] = useState([]);
 
-  const Logout = () => {
-    setUser({
-      isAuthenticated: false,
-      name: "",
-      avatar: ""
-    });
-    console.log("redirected!");
+  async function fetchEvents() {
+    function addEventColor(e) {
+      const styledEvent = e;
+      const color = typeMapper[e.type].color;
+      styledEvent.backgroundColor = color;
+      styledEvent.borderColor = color;
+      return styledEvent;
+    }
 
-    history.push({
-      pathname: "/login",
-      state: { from: location }
-    });
-  };
+    try {
+      const response = await axios.get(`/api/events`);
+      let events = response.data;
+      events = events.map(addEventColor);
+      setEvents(events);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
+  function previous() {
+    R.cond([[R.always, () => calendarComponentRef.current.getApi().prev()]])(
+      calendarComponentRef.current
+    );
+  }
+
+  function next() {
+    R.cond([[R.always, () => calendarComponentRef.current.getApi().next()]])(
+      calendarComponentRef.current
+    );
+  }
+
+  function handleEventClick({ event }) {
+    history.push(`${location.pathname}/${event.extendedProps._id}`);
+  }
+
+  function renderEvent(info) {
+    // handle render event
+  }
 
   return (
-    <AppBar position="static" style={style}>
-      <Toolbar>
-        <Typography variant="h6" className={classes.title}>
-          UniMiBCalendar
-        </Typography>
-        <div>
-          <IconButton
-            aria-label="account of current user"
-            aria-controls="menu-appbar"
-            aria-haspopup="true"
-            onClick={handleMenu}
-            color="inherit"
-          >
-            <Avatar src={user.avatar} alt={user.name} />
-          </IconButton>
-          <Menu
-            id="menu-appbar"
-            anchorEl={anchorEl}
-            anchorOrigin={{
-              vertical: "top",
-              horizontal: "right"
+    <Fragment>
+      <Swipeable
+        onSwipedRight={previous}
+        onSwipedLeft={next}
+        preventDefaultTouchmoveEvent={true}
+      >
+        <Container className={"calendar-container"}>
+          <FullCalendar
+            defaultView="dayGridMonth"
+            plugins={[dayGridPlugin, timeGridPlugin]}
+            locale="it"
+            weekends={false}
+            height="parent"
+            titleFormat={{ year: "numeric", month: "long" }}
+            allDayText={"Tutto il giorno"}
+            views={{
+              dayGridMonth: {
+                columnHeaderFormat: {
+                  weekday: "narrow"
+                }
+              },
+              timeGridWeek: {
+                columnHeaderFormat: {
+                  weekday: "short",
+                  day: "numeric"
+                }
+              },
+              timeGridDay: {
+                columnHeaderFormat: {
+                  month: "numeric",
+                  weekday: "long",
+                  day: "numeric"
+                }
+              }
             }}
-            keepMounted
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right"
+            events={events}
+            eventRender={renderEvent}
+            eventClick={handleEventClick}
+            buttonText={{
+              today: "Oggi",
+              month: "Mese",
+              week: "Settimana",
+              day: "Giorno",
+              list: "Lista"
             }}
-            open={open}
-            onClose={handleClose}
-          >
-            <MenuItem dense onClick={handleClose}>
-              <ListItemIcon>
-                <PersonIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText primary="Profilo" />
-            </MenuItem>
-            <MenuItem dense onClick={handleClose}>
-              <GoogleLogout
-                clientId="645362289460-ulika5v4o1a96cpfibbv7q73vfoihnr2.apps.googleusercontent.com"
-                buttonText="Logout"
-                onLogoutSuccess={Logout}
-              />
-            </MenuItem>
-          </Menu>
-        </div>
-      </Toolbar>
-    </AppBar>
+            header={{
+              left: "dayGridMonth,timeGridWeek,timeGridDay",
+              center: "title",
+              right: "prev,next"
+            }}
+            footer={{
+              left: "",
+              center: "",
+              right: "prev,next"
+            }}
+            ref={calendarComponentRef}
+          />
+        </Container>
+      </Swipeable>
+    </Fragment>
   );
 }
 

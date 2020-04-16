@@ -6,8 +6,28 @@ const Event = require('../models/event');
 // Get all events
 router.get('/', async (req, res) => {
   try {
-    const events = await Event.find();
+    const events = await Event.find({ participants: req.userEmail }).select(
+      '_id title start end allDay type',
+    );
     res.json(events);
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+});
+
+// Get one event by id
+router.get('/:id', async (req, res) => {
+  try {
+    const event = await Event.findOne({ participants: req.userEmail, _id: req.params.id });
+    if (!event) {
+      res.status(404).json({
+        message: 'Not found.',
+      });
+    } else {
+      res.json(event);
+    }
   } catch (err) {
     res.status(500).json({
       message: err.message,
@@ -18,7 +38,7 @@ router.get('/', async (req, res) => {
 // Create one event
 router.post('/', async (req, res) => {
   const event = new Event({
-    title: req.body.title,
+    ...req.body,
   });
 
   try {

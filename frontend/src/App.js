@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   BrowserRouter as Router,
   Redirect,
@@ -6,10 +6,14 @@ import {
   Switch
 } from "react-router-dom";
 import Calendar from "./components/Calendar/Calendar";
-import Login from "./contexts/Login/Login";
+import Login from "./components/Login/Login";
 import { AuthContext } from "./contexts/AuthContext";
-
-const { useState } = require("react");
+import { ThemeProvider } from "@material-ui/styles";
+import { CssBaseline } from "@material-ui/core";
+import theme from "./themes/theme";
+import TopBar from "./components/TopBar/TopBar";
+import EventDetail from "./components/EventDetail/EventDetail";
+import ErrorDisplayer from "./components/ErrorDisplayer/ErrorDisplayer";
 
 function App() {
   const [user, setUser] = useState({
@@ -28,7 +32,7 @@ function App() {
           ) : (
             <Redirect
               to={{
-                pathname: "/login",
+                pathname: "/",
                 state: { from: location }
               }}
             />
@@ -39,23 +43,30 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <AuthContext.Provider value={{ user, setUser }}>
-        <Router>
-          <Switch>
-            <PrivateRoute path="/calendar">
-              <Calendar />
-            </PrivateRoute>
-            <Route path="/login">
-              <Login />
-            </Route>
-            <Route path="/" exact>
-              <Login />
-            </Route>
-          </Switch>
-        </Router>
-      </AuthContext.Provider>
-    </div>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <div className="App">
+        <AuthContext.Provider value={{ user, setUser }}>
+          <Router>
+            <TopBar />
+            <Switch>
+              <PrivateRoute path="/calendar" exact>
+                <Calendar />
+              </PrivateRoute>
+              <PrivateRoute path="/calendar/:eventId">
+                <EventDetail />
+              </PrivateRoute>
+              <Route path="/" exact>
+                <Login />
+              </Route>
+              <Route path="/error/:errorCode" exact>
+                <ErrorDisplayer />
+              </Route>
+            </Switch>
+          </Router>
+        </AuthContext.Provider>
+      </div>
+    </ThemeProvider>
   );
 }
 

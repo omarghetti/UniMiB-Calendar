@@ -1,0 +1,196 @@
+@import "~@fullcalendar/core/main.css";
+@import "~@fullcalendar/daygrid/main.css";
+@import "~@fullcalendar/timegrid/main.css";
+
+:root {
+  --pure-material-primary-rgb: "rgb(33, 150,3)";
+  --pure-material-onprimary-rgb: "rgb(255, 255, 255)";
+  --pure-material-surface-rgb: "rgb(255, 255, 255)";
+  --pure-material-onsurface-rgb: 0, 0, 0;
+}
+
+.fc button.fc-prev-button,
+.fc button.fc-next-button {
+  display: inline-block;
+  min-width: 48px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.fc .fc-toolbar.fc-header-toolbar .fc-center {
+  text-transform: uppercase;
+}
+
+.calendar-container.MuiContainer-root {
+  height: 100vh;
+  padding-top: 8px;
+}
+
+.fc
+  .fc-view.fc-timeGridWeek-view
+  thead.fc-head
+  td.fc-head-container
+  th.fc-day-header {
+  text-transform: uppercase;
+}
+
+.fc
+  .fc-view.fc-timeGridDay-view
+  thead.fc-head
+  td.fc-head-container
+  th.fc-day-header {
+  text-transform: uppercase;
+}
+
+.fc a.fc-event {
+  cursor: pointer;
+}
+
+// mobile
+@media screen and (max-device-width: 450px) {
+  .calendar-container.MuiContainer-root {
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 16px;
+  }
+
+  .fc button.fc-prev-button,
+  .fc button.fc-next-button {
+    display: none;
+  }
+
+  .fc .fc-toolbar.fc-header-toolbar {
+    flex-wrap: wrap;
+    margin-bottom: 0;
+  }
+
+  .fc .fc-toolbar.fc-header-toolbar .fc-left {
+    margin: auto;
+  }
+
+  .fc .fc-toolbar.fc-header-toolbar .fc-center {
+    margin: auto;
+    text-align: center;
+  }
+
+  /*
+    // iOS like
+
+    .fc .fc-view.fc-dayGridMonth-view thead.fc-head th.fc-day-header {
+      font-size: 16px;
+    }
+
+    .fc .fc-view.fc-dayGridMonth-view .fc-bg td.fc-day {
+      text-align: center;
+      vertical-align: middle;
+      border: none;
+    }
+
+    .fc .fc-view.fc-dayGridMonth-view .fc-content-skeleton td.fc-day-top span.fc-day-number {
+      width: 100%;
+      font-size: 24px;
+      text-align: center;
+    }*/
+}
+
+// end mobile
+
+.fc button {
+  position: relative;
+  display: inline-block;
+  box-sizing: border-box;
+  border: solid 1px;
+  border-color: var(--pure-material-onsurface-rgb);
+  border-radius: 4px;
+  padding: 0 16px;
+  min-width: 64px;
+  height: 36px;
+  vertical-align: middle;
+  text-align: center;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  color: var(--pure-material-primary-rgb);
+  background-color: transparent;
+  font-family: var(
+    --pure-material-font,
+    "Roboto",
+    "Segoe UI",
+    BlinkMacSystemFont,
+    system-ui,
+    -apple-system
+  );
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 34px;
+  overflow: hidden;
+  outline: none;
+  cursor: pointer;
+}
+
+.fc button::-moz-focus-inner {
+  border: none;
+}
+
+/* Overlay */
+.fc button::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: currentColor;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+/* Ripple */
+.fc button::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border-radius: 50%;
+  padding: 50%;
+  width: 32px;
+  height: 32px;
+  background-color: currentColor;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(1);
+  transition: opacity 1s, transform 0.5s;
+}
+
+/* Hover, Focus */
+.fc button:hover::before {
+  opacity: 0.04;
+}
+
+.fc button:focus::before {
+  opacity: 0.12;
+}
+
+.fc button:hover:focus::before {
+  opacity: 0.16;
+}
+
+/* Active */
+.fc button:active::after {
+  opacity: 0.16;
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0s;
+}
+
+/* Disabled */
+.fc button:disabled {
+  color: var(--pure-material-onsurface-rgb);
+  background-color: transparent;
+  cursor: initial;
+}
+
+.fc button:disabled::before {
+  opacity: 0;
+}
+
+.fc button:disabled::after {
+  opacity: 0;
+}

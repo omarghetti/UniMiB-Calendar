@@ -47,8 +47,8 @@ function App() {
       <CssBaseline />
       <div className="App">
         <AuthContext.Provider value={{ user, setUser }}>
-          <TopBar />
           <Router>
+            <TopBar />
             <Switch>
               <PrivateRoute path="/calendar" exact>
                 <Calendar />

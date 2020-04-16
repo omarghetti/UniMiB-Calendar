@@ -8,6 +8,11 @@ import MenuItem from "@material-ui/core/MenuItem";
 import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import { GoogleLogout } from "react-google-login";
+import { useHistory, useLocation } from "react-router-dom";
+import PersonIcon from "@material-ui/icons/Person";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -21,8 +26,10 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function TopBar() {
+  let location = useLocation();
+  let history = useHistory();
   const classes = useStyles();
-  let { user } = useContext(AuthContext);
+  let { user, setUser } = useContext(AuthContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
@@ -32,6 +39,19 @@ function TopBar() {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const Logout = () => {
+    setUser({
+      isAuthenticated: false,
+      name: "",
+      avatar: ""
+    });
+
+    history.push({
+      pathname: "/",
+      state: { from: location }
+    });
   };
 
   return (
@@ -71,10 +91,17 @@ function TopBar() {
               onClose={handleClose}
             >
               <MenuItem dense onClick={handleClose}>
-                Profilo
+                <ListItemIcon>
+                  <PersonIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText primary="Profilo" />
               </MenuItem>
               <MenuItem dense onClick={handleClose}>
-                Logout
+                <GoogleLogout
+                  clientId="645362289460-ulika5v4o1a96cpfibbv7q73vfoihnr2.apps.googleusercontent.com"
+                  buttonText="Logout"
+                  onLogoutSuccess={Logout}
+                />
               </MenuItem>
             </Menu>
           </div>

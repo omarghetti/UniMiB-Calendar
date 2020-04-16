@@ -1,0 +1,38 @@
+version: "3"
+
+services:
+  database:
+    image: "mongo"
+    container_name: "unimib-calendar-mongo"
+    ports:
+      - "27017:27017"
+    networks:
+      - overlay
+    volumes:
+      - mongodb_data_container:/data/db
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: "mongodb://database:27017/unimib-calendar"
+    networks:
+      - overlay
+    depends_on:
+      - database
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - overlay
+    depends_on:
+      - backend
+
+volumes:
+  mongodb_data_container:
+
+networks:
+  overlay:

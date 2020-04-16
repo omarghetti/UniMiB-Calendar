@@ -48,10 +48,9 @@ function EventDetail() {
   useEffect(() => {
     async function fetchEvent() {
       try {
-        const response = await axios(`/api/events/${eventId}`);
+        const response = await axios.get(`/api/events/${eventId}`);
         setEvent(response.data);
       } catch (e) {
-        debugger;
         history.push(`/error/${e.response.status}`);
       } finally {
         setIsFetching(false);

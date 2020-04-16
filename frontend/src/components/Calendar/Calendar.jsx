@@ -7,6 +7,7 @@ import { Swipeable } from "react-swipeable";
 import axios from "axios";
 import { useHistory, useLocation } from "react-router-dom";
 import { typeMapper } from "../../utils/eventUtils";
+import * as R from "ramda";
 
 function Calendar() {
   let location = useLocation();
@@ -25,10 +26,14 @@ function Calendar() {
       return styledEvent;
     }
 
-    const response = await axios(`/api/events`);
-    let events = response.data;
-    events = events.map(addEventColor);
-    setEvents(events);
+    try {
+      const response = await axios.get(`/api/events`);
+      let events = response.data;
+      events = events.map(addEventColor);
+      setEvents(events);
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   useEffect(() => {
@@ -36,17 +41,15 @@ function Calendar() {
   }, []);
 
   function previous() {
-    if (calendarComponentRef.current) {
-      const calendarApi = calendarComponentRef.current.getApi();
-      calendarApi.prev();
-    }
+    R.cond([[R.always, () => calendarComponentRef.current.getApi().prev()]])(
+      calendarComponentRef.current
+    );
   }
 
   function next() {
-    if (calendarComponentRef.current) {
-      const calendarApi = calendarComponentRef.current.getApi();
-      calendarApi.next();
-    }
+    R.cond([[R.always, () => calendarComponentRef.current.getApi().next()]])(
+      calendarComponentRef.current
+    );
   }
 
   function handleEventClick({ event }) {

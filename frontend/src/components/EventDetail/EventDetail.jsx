@@ -93,13 +93,15 @@ function EventDetail() {
               event.title
             )}
           </Typography>
-          <Typography variant="h6" className={classes.time}>
+          <Typography variant="subtitle1" className={classes.time}>
             <TimeIcon />
             &nbsp;
             {renderWhenReady(
               !isFetching,
               <Skeleton variant="text" width={270} />,
-              getFormattedTimeInterval(event)
+              <div className="event-time-interval">
+                {getFormattedTimeInterval(event)}
+              </div>
             )}
           </Typography>
         </Box>

@@ -27,12 +27,13 @@ function App() {
   const [user, setUser] = useState(initialState);
 
   useEffect(() => {
-    console.info("app effext", { user });
     localStorage.setItem("auth", JSON.stringify(user));
     axios.defaults.headers.common["Authorization"] = user.tokenId;
   }, [user]);
 
   function PrivateRoute({ children, ...rest }) {
+    axios.defaults.headers.common["Authorization"] = user.tokenId;
+
     return (
       <Route
         {...rest}

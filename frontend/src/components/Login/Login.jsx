@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import GoogleLogin from "react-google-login";
 import Typography from "@material-ui/core/Typography";
 import { useHistory, useLocation } from "react-router-dom";
@@ -6,7 +6,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 
 const divStyle = {
   textAlign: "center",
-  marginTop: "256px",
+  marginTop: "128px",
   padding: "16px"
 };
 
@@ -15,8 +15,17 @@ function Login() {
   let location = useLocation();
   let { user, setUser } = React.useContext(AuthContext);
 
+  useEffect(() => {
+    if (user.isAuthenticated) {
+      history.push({
+        pathname: "/calendar",
+        state: { from: location }
+      });
+    }
+  }, [history, location, user]);
+
   const responseGoogleSuccess = response => {
-    console.info("success");
+    console.info("Authentication successful.");
     setUser({
       isAuthenticated: true,
       name: response.profileObj.name,
@@ -35,19 +44,23 @@ function Login() {
   };
 
   const responseGoogleFailure = response => {
+    console.error("Authentication failed.");
+
     setUser({
       isAuthenticated: false,
       name: "",
       avatar: ""
     });
-
-    console.error("Authentication failed.");
   };
 
   return (
     <Fragment>
       {user.isAuthenticated ? (
-        <div>Sei già loggato</div>
+        <div style={divStyle}>
+          <Typography variant="h4">
+            Sei già loggato, effettua il logout se vuoi cambiare account.
+          </Typography>
+        </div>
       ) : (
         <div style={divStyle}>
           <Typography variant="h4">

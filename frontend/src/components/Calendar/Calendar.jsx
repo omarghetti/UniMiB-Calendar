@@ -45,8 +45,6 @@ function Calendar() {
   }
 
   useEffect(() => {
-    console.info("request from calendar", { user });
-    axios.defaults.headers.common["Authorization"] = user.tokenId;
     fetchEvents();
   }, [user]);
 

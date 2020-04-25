@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
@@ -25,6 +25,8 @@ import {
 } from "../../utils/eventUtils";
 import Skeleton from "@material-ui/lab/Skeleton";
 import { renderWhenReady } from "../../utils/renderUtils";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
 
 const useStyles = makeStyles(theme => ({
   header: {
@@ -48,6 +50,10 @@ function EventDetail() {
   const [event, setEvent] = useState({ participants: [], attachments: [] });
   const [isFetching, setIsFetching] = useState(true);
 
+  const setFetchingCompleted = useCallback(() => {
+    setIsFetching(false);
+  }, []);
+
   useEffect(() => {
     async function fetchEvent() {
       try {
@@ -56,12 +62,12 @@ function EventDetail() {
       } catch (e) {
         history.push(`/error/${e.response.status}`);
       } finally {
-        setIsFetching(false);
+        setFetchingCompleted();
       }
     }
 
     fetchEvent();
-  }, [eventId, history]);
+  }, [eventId, history, setFetchingCompleted]);
 
   function handleBackClick() {
     history.push("/calendar");
@@ -111,76 +117,83 @@ function EventDetail() {
 
   function renderDetail() {
     return (
-      <List className={classes.detail}>
-        <ListItem>
-          <ListItemAvatar>
-            <EventIcon />
-          </ListItemAvatar>
-          <ListItemText
-            primary="Tipo"
-            secondary={renderWhenReady(
-              !isFetching,
-              <Skeleton variant="text" width={270} />,
-              typeMapper[event.type]?.label
-            )}
-          />
-        </ListItem>
-        <ListItem>
-          <ListItemAvatar>
-            <PeopleIcon />
-          </ListItemAvatar>
-          <ListItemText
-            primary="Partecipanti"
-            secondary={renderWhenReady(
-              !isFetching,
-              <Skeleton variant="text" width={270} />,
-              getFormattedPropertyValues(event.participants, "")
-            )}
-          />
-        </ListItem>
-        <ListItem>
-          <ListItemAvatar>
-            <PlaceIcon />
-          </ListItemAvatar>
-          <ListItemText
-            primary="Luogo"
-            secondary={renderWhenReady(
-              !isFetching,
-              <Skeleton variant="text" width={270} />,
-              getFormattedPropertyValue(
-                event.attachments,
-                "Nessun luogo specificato"
-              )
-            )}
-          />
-        </ListItem>
-        <ListItem>
-          <ListItemAvatar>
-            <AttachmentIcon />
-          </ListItemAvatar>
-          <ListItemText
-            primary="Allegati"
-            secondary={renderWhenReady(
-              !isFetching,
-              <Skeleton variant="text" width={270} />,
-              getFormattedPropertyValues(event.attachments, "Nessun allegato")
-            )}
-          />
-        </ListItem>
-        <ListItem>
-          <ListItemAvatar>
-            <NotesIcon />
-          </ListItemAvatar>
-          <ListItemText
-            primary="Note"
-            secondary={renderWhenReady(
-              !isFetching,
-              <Skeleton variant="text" width={270} />,
-              getFormattedPropertyValue(event.notes, "Nessuna nota")
-            )}
-          />
-        </ListItem>
-      </List>
+      <Card className={classes.root}>
+        <CardContent>
+          <List className={classes.detail}>
+            <ListItem>
+              <ListItemAvatar>
+                <EventIcon />
+              </ListItemAvatar>
+              <ListItemText
+                primary="Tipo"
+                secondary={renderWhenReady(
+                  !isFetching,
+                  <Skeleton variant="text" width={270} />,
+                  typeMapper[event.type]?.label
+                )}
+              />
+            </ListItem>
+            <ListItem>
+              <ListItemAvatar>
+                <PeopleIcon />
+              </ListItemAvatar>
+              <ListItemText
+                primary="Partecipanti"
+                secondary={renderWhenReady(
+                  !isFetching,
+                  <Skeleton variant="text" width={270} />,
+                  getFormattedPropertyValues(event.participants, "")
+                )}
+              />
+            </ListItem>
+            <ListItem>
+              <ListItemAvatar>
+                <PlaceIcon />
+              </ListItemAvatar>
+              <ListItemText
+                primary="Luogo"
+                secondary={renderWhenReady(
+                  !isFetching,
+                  <Skeleton variant="text" width={270} />,
+                  getFormattedPropertyValue(
+                    event.attachments,
+                    "Nessun luogo specificato"
+                  )
+                )}
+              />
+            </ListItem>
+            <ListItem>
+              <ListItemAvatar>
+                <AttachmentIcon />
+              </ListItemAvatar>
+              <ListItemText
+                primary="Allegati"
+                secondary={renderWhenReady(
+                  !isFetching,
+                  <Skeleton variant="text" width={270} />,
+                  getFormattedPropertyValues(
+                    event.attachments,
+                    "Nessun allegato"
+                  )
+                )}
+              />
+            </ListItem>
+            <ListItem>
+              <ListItemAvatar>
+                <NotesIcon />
+              </ListItemAvatar>
+              <ListItemText
+                primary="Note"
+                secondary={renderWhenReady(
+                  !isFetching,
+                  <Skeleton variant="text" width={270} />,
+                  getFormattedPropertyValue(event.notes, "Nessuna nota")
+                )}
+              />
+            </ListItem>
+          </List>
+        </CardContent>
+      </Card>
     );
   }
 

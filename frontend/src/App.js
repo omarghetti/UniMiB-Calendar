@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Redirect,
@@ -14,15 +14,26 @@ import theme from "./themes/theme";
 import TopBar from "./components/TopBar/TopBar";
 import EventDetail from "./components/EventDetail/EventDetail";
 import ErrorDisplayer from "./components/ErrorDisplayer/ErrorDisplayer";
+import axios from "axios";
 
 function App() {
-  const [user, setUser] = useState({
-    isAuthenticated: false,
-    name: "",
-    avatar: ""
-  });
+  const initialState = localStorage.getItem("auth")
+    ? JSON.parse(localStorage.getItem("auth"))
+    : {
+        isAuthenticated: false,
+        name: "",
+        avatar: ""
+      };
+  const [user, setUser] = useState(initialState);
+
+  useEffect(() => {
+    localStorage.setItem("auth", JSON.stringify(user));
+    axios.defaults.headers.common["Authorization"] = user.tokenId;
+  }, [user]);
 
   function PrivateRoute({ children, ...rest }) {
+    axios.defaults.headers.common["Authorization"] = user.tokenId;
+
     return (
       <Route
         {...rest}

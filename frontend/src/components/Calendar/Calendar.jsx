@@ -1,4 +1,10 @@
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import React, {
+  Fragment,
+  useContext,
+  useEffect,
+  useRef,
+  useState
+} from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -8,6 +14,7 @@ import axios from "axios";
 import { useHistory, useLocation } from "react-router-dom";
 import { typeMapper } from "../../utils/eventUtils";
 import * as R from "ramda";
+import { AuthContext } from "../../contexts/AuthContext";
 
 function Calendar() {
   let location = useLocation();
@@ -16,6 +23,7 @@ function Calendar() {
   const calendarComponentRef = useRef(null);
 
   const [events, setEvents] = useState([]);
+  let { user } = useContext(AuthContext);
 
   async function fetchEvents() {
     function addEventColor(e) {
@@ -38,7 +46,7 @@ function Calendar() {
 
   useEffect(() => {
     fetchEvents();
-  }, []);
+  }, [user]);
 
   function previous() {
     R.cond([[R.always, () => calendarComponentRef.current.getApi().prev()]])(

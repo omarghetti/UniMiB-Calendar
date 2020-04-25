@@ -11,13 +11,12 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import Container from "@material-ui/core/Container";
 import { Swipeable } from "react-swipeable";
 import axios from "axios";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { typeMapper } from "../../utils/eventUtils";
 import * as R from "ramda";
 import { AuthContext } from "../../contexts/AuthContext";
 
 function Calendar() {
-  let location = useLocation();
   let history = useHistory();
 
   const calendarComponentRef = useRef(null);
@@ -61,7 +60,7 @@ function Calendar() {
   }
 
   function handleEventClick({ event }) {
-    history.push(`${location.pathname}/${event.extendedProps._id}`);
+    history.push(`calendar/${event.extendedProps._id}`);
   }
 
   function renderEvent(info) {

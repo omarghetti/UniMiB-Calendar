@@ -1,9 +1,8 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment } from "react";
 import GoogleLogin from "react-google-login";
 import Typography from "@material-ui/core/Typography";
 import { useHistory, useLocation } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
-import axios from "axios";
 
 const divStyle = {
   textAlign: "center",
@@ -16,16 +15,8 @@ function Login() {
   let location = useLocation();
   let { user, setUser } = React.useContext(AuthContext);
 
-  useEffect(() => {
-    if (user.isAuthenticated) {
-      history.push({
-        pathname: location?.state?.from.pathname,
-        state: { from: location }
-      });
-    }
-  }, [history, location, user.isAuthenticated]);
-
   const responseGoogleSuccess = response => {
+    console.info("success");
     setUser({
       isAuthenticated: true,
       name: response.profileObj.name,
@@ -33,8 +24,6 @@ function Login() {
       avatar: response.profileObj.imageUrl,
       tokenId: response.tokenId
     });
-
-    axios.defaults.headers.common["Authorization"] = response.tokenId;
 
     if (process.env.NODE_ENV === "development")
       console.info("Token id: ", response.tokenId);
@@ -57,42 +46,46 @@ function Login() {
 
   return (
     <Fragment>
-      <div style={divStyle}>
-        <Typography variant="h4">
-          Accedi con il tuo account di Ateneo.
-        </Typography>
-        <br />
-        <div>
-          <GoogleLogin
-            clientId="645362289460-ulika5v4o1a96cpfibbv7q73vfoihnr2.apps.googleusercontent.com"
-            buttonText="Login"
-            onSuccess={responseGoogleSuccess}
-            onFailure={responseGoogleFailure}
-            cookiePolicy={"single_host_origin"}
-            isSignedIn={true}
-            className={"login-button"}
-          />
-          <div className={"spinner-wrapper"}>
-            <svg
-              className="spinner"
-              width="65px"
-              height="65px"
-              viewBox="0 0 66 66"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <circle
-                className="path"
-                fill="none"
-                strokeWidth="6"
-                strokeLinecap="round"
-                cx="33"
-                cy="33"
-                r="30"
-              />
-            </svg>
+      {user.isAuthenticated ? (
+        <div>Sei già loggato</div>
+      ) : (
+        <div style={divStyle}>
+          <Typography variant="h4">
+            Accedi con il tuo account di Ateneo.
+          </Typography>
+          <br />
+          <div>
+            <GoogleLogin
+              clientId="645362289460-ulika5v4o1a96cpfibbv7q73vfoihnr2.apps.googleusercontent.com"
+              buttonText="Login"
+              onSuccess={responseGoogleSuccess}
+              onFailure={responseGoogleFailure}
+              cookiePolicy={"single_host_origin"}
+              isSignedIn={true}
+              className={"login-button"}
+            />
+            <div className={"spinner-wrapper"}>
+              <svg
+                className="spinner"
+                width="65px"
+                height="65px"
+                viewBox="0 0 66 66"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle
+                  className="path"
+                  fill="none"
+                  strokeWidth="6"
+                  strokeLinecap="round"
+                  cx="33"
+                  cy="33"
+                  r="30"
+                />
+              </svg>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </Fragment>
   );
 }

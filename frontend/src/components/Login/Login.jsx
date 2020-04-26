@@ -76,6 +76,7 @@ function Login() {
               cookiePolicy={"single_host_origin"}
               isSignedIn={true}
               className={"login-button"}
+              uxMode={"redirect"}
             />
             <div className={"spinner-wrapper"}>
               <svg

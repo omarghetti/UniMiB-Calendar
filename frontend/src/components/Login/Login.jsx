@@ -1,5 +1,4 @@
 import React, { Fragment, useEffect } from "react";
-import GoogleLogin from "react-google-login";
 import Typography from "@material-ui/core/Typography";
 import { useHistory, useLocation } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
@@ -13,7 +12,7 @@ const divStyle = {
 function Login() {
   let history = useHistory();
   let location = useLocation();
-  let { user, setUser } = React.useContext(AuthContext);
+  let { user } = React.useContext(AuthContext);
 
   useEffect(() => {
     if (user.isAuthenticated) {
@@ -23,35 +22,6 @@ function Login() {
       });
     }
   }, [history, location, user]);
-
-  const responseGoogleSuccess = response => {
-    console.info("Authentication successful.");
-    setUser({
-      isAuthenticated: true,
-      name: response.profileObj.name,
-      email: response.profileObj.email,
-      avatar: response.profileObj.imageUrl,
-      tokenId: response.tokenId
-    });
-
-    if (process.env.NODE_ENV === "development")
-      console.info("Token id: ", response.tokenId);
-
-    history.push({
-      pathname: "/calendar",
-      state: { from: location }
-    });
-  };
-
-  const responseGoogleFailure = response => {
-    console.error("Authentication failed.");
-
-    setUser({
-      isAuthenticated: false,
-      name: "",
-      avatar: ""
-    });
-  };
 
   return (
     <Fragment>
@@ -68,15 +38,7 @@ function Login() {
           </Typography>
           <br />
           <div>
-            <GoogleLogin
-              clientId="645362289460-ulika5v4o1a96cpfibbv7q73vfoihnr2.apps.googleusercontent.com"
-              buttonText="Login"
-              onSuccess={responseGoogleSuccess}
-              onFailure={responseGoogleFailure}
-              cookiePolicy={"single_host_origin"}
-              isSignedIn={true}
-              className={"login-button"}
-            />
+            <a href={"/auth/google"}>Login</a>
             <div className={"spinner-wrapper"}>
               <svg
                 className="spinner"

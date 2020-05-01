@@ -105,9 +105,9 @@ app.get(
   }),
 );
 
-app.use('/api/events', eventsRouter);
+app.use('/api/events', isLoggedIn, eventsRouter);
 
-app.get('/aa', isLoggedIn, (req, res) => {
+app.get('/*', isLoggedIn, (req, res) => {
   res.sendFile(path.join(__dirname, 'ui', 'index.html'));
 });
 

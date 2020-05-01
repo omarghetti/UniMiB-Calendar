@@ -12,6 +12,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import { useHistory, useLocation } from "react-router-dom";
 import PersonIcon from "@material-ui/icons/Person";
 import axios from "axios";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -31,6 +32,7 @@ function TopBar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const [logout, setLogout] = useState(false);
+  const { setUser } = React.useContext(AuthContext);
 
   const handleMenu = event => {
     setAnchorEl(event.currentTarget);
@@ -45,6 +47,8 @@ function TopBar() {
       try {
         const { data } = await axios.get("/logout");
         if (data.redirectUrl) {
+          setUser({ isLoggedIn: false });
+
           history.push({
             pathname: data.redirectUrl,
             state: { from: location }
@@ -58,7 +62,7 @@ function TopBar() {
     if (logout) {
       doLogout();
     }
-  }, [logout, history, location]);
+  }, [logout, history, location, setUser]);
 
   return (
     <React.Fragment>

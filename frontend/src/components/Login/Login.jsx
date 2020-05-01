@@ -19,20 +19,20 @@ function Login() {
 
   useEffect(() => {
     if (isLoggedIn) {
-      setUser({ isLoggedIn: true });
-
       history.push({
         pathname: "/calendar",
         state: { from: location }
       });
     }
-  }, [isLoggedIn, history, location, setUser]);
+  }, [isLoggedIn, history, location]);
 
   useEffect(() => {
     async function doLogin() {
       try {
         const response = await axios.get("/auth/mock");
-        if (response.data.token) {
+        const user = response.data;
+        if (user.token) {
+          setUser({ email: user.email, name: user.name, isLoggedIn: true });
           setIsLoggedIn(true);
         }
       } catch (err) {
@@ -43,7 +43,7 @@ function Login() {
     if (login) {
       doLogin();
     }
-  }, [login]);
+  }, [login, setUser]);
 
   return (
     <Fragment>

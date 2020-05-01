@@ -28,11 +28,10 @@ function App() {
     async function checkAuth() {
       try {
         console.info("fetching");
-        const { data } = await axios.get("/user");
-        if (data.token) {
-          console.info("set logged user", data);
-
-          setUser({ isLoggedIn: true });
+        const response = await axios.get("/user");
+        const user = response.data;
+        if (user.token) {
+          setUser({ email: user.email, name: user.name, isLoggedIn: true });
         }
       } catch (err) {
         console.error(err);

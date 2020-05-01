@@ -49,12 +49,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// route for home page
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'ui', 'login', 'index.html'));
-});
-
 app.get('/user', (req, res) => {
+  console.info('user', req.user);
   res.send(req.user);
 });
 
@@ -66,18 +62,30 @@ app.get('/user', (req, res) => {
 // route for showing the profile page
 app.get('/profile', isLoggedIn, (req, res) => {
   console.info('Logged in hello', req.user);
-  res.sendFile(path.join(__dirname, 'ui', 'app', 'index.html'));
+  res.send(req.user);
 });
 
 // route for logging out
 app.get('/logout', (req, res) => {
   console.info('Logged out bye bye');
   req.logout();
-  res.redirect('/');
+  res.send({ redirectUrl: '/login' });
 });
 
 // facebook routes
 // twitter routes
+
+// =====================================
+// MOCK ROUTES =======================
+// =====================================
+app.get(
+  '/auth/mock',
+  passport.authenticate('mock', {
+    successRedirect: '/profile',
+    failureRedirect: '/login',
+    failureFlash: 'Invalid mock credentials.',
+  }),
+);
 
 // =====================================
 // GOOGLE ROUTES =======================
@@ -99,9 +107,9 @@ app.get(
 
 app.use('/api/events', eventsRouter);
 
-/* app.get('/!*', (req, res) => {
+app.get('/aa', isLoggedIn, (req, res) => {
   res.sendFile(path.join(__dirname, 'ui', 'index.html'));
-}); */
+});
 
 app.listen(PORT, HOST);
 console.info(`Listening on ${HOST}:${PORT}`);

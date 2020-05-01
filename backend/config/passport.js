@@ -7,6 +7,7 @@
 // const FacebookStrategy = require('passport-facebook').Strategy;
 // const TwitterStrategy = require('passport-twitter').Strategy;
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+const MockStrategy = require('passport-mock-strategy');
 
 // load up the user model
 const User = require('../models/user');
@@ -34,6 +35,53 @@ module.exports = function(passport) {
   // code for signup (use('local-signup', new LocalStategy))
   // code for facebook (use('facebook', new FacebookStrategy))
   // code for twitter (use('twitter', new TwitterStrategy))
+
+  // =========================================================================
+  // MOCK ==================================================================
+  // =========================================================================
+
+  passport.use(
+    new MockStrategy(
+      {
+        name: 'mock',
+        user: {
+          id: 'fake-user',
+        },
+        callbackURL: 'http://localhost:8080/auth/mock/callback',
+      },
+      (profile, done) => {
+        // Perform actions on user, call done once finished
+
+        User.findOne({ profileId: profile.id }, function(err, user) {
+          if (err) return done(err);
+
+          if (user) {
+            // if a user is found, log them in
+            return done(null, user);
+          }
+          // if the user isnt in our database, create a new user
+          const newUser = new User();
+          // set all of the relevant information
+          newUser.profileId = 'fake-user';
+          newUser.token = 'fake-token';
+          newUser.name = 'fake-name';
+          newUser.email = 'fake-email';
+
+          console.info('new user', newUser);
+
+          // save the user
+          newUser.save(function(e) {
+            if (e) {
+              console.info('error saving user');
+            }
+            return done(null, newUser);
+          });
+
+          return null;
+        });
+      },
+    ),
+  );
 
   // =========================================================================
   // GOOGLE ==================================================================

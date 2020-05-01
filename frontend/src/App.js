@@ -1,46 +1,94 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ThemeProvider } from "@material-ui/styles";
 import { CssBaseline } from "@material-ui/core";
 import theme from "./themes/theme";
 import axios from "axios";
+import {
+  BrowserRouter as Router,
+  Redirect,
+  Route,
+  Switch
+} from "react-router-dom";
+import Calendar from "./components/Calendar/Calendar";
+import EventDetail from "./components/EventDetail/EventDetail";
+import ErrorDisplayer from "./components/ErrorDisplayer/ErrorDisplayer";
+import Login from "./components/Login/Login";
+import { AuthContext } from "./contexts/AuthContext";
 
 function App() {
+  const [user, setUser] = useState({
+    isAuthenticated: false,
+    name: "",
+    avatar: ""
+  });
+
+  const [isReady, setIsReady] = useState(false);
+
   useEffect(() => {
-    async function fetch() {
+    async function checkAuth() {
       try {
-        const response = await axios.get(`/user`);
-        console.info("logged", response.data);
+        console.info("fetching");
+        const { data } = await axios.get("/user");
+        if (data.token) {
+          console.info("set logged user", data);
+
+          setUser({ isLoggedIn: true });
+        }
       } catch (err) {
         console.error(err);
       }
     }
 
-    fetch();
+    checkAuth().then(() => setIsReady(true));
   }, []);
 
-  return (
+  function PrivateRoute({ children, ...rest }) {
+    const { user } = React.useContext(AuthContext);
+
+    console.info("context user is ", user);
+    return (
+      <Route
+        {...rest}
+        render={({ location }) =>
+          user.isLoggedIn ? (
+            children
+          ) : (
+            <Redirect
+              to={{
+                pathname: "/login",
+                state: { from: location }
+              }}
+            />
+          )
+        }
+      />
+    );
+  }
+
+  return !isReady ? (
+    <div>Loading...</div>
+  ) : (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <div className="App">
-        {/*        <AuthContext.Provider value={{ user, setUser }}>
+        <AuthContext.Provider value={{ user, setUser }}>
           <Router>
-            <TopBar />
             <Switch>
+              <Route path="/login" exact>
+                <Login />
+              </Route>
               <PrivateRoute path="/calendar" exact>
                 <Calendar />
               </PrivateRoute>
-              <PrivateRoute path="/calendar/:eventId">
+              <Route path="/calendar/:eventId">
                 <EventDetail />
-              </PrivateRoute>
-              <Route path="/" exact>
-                <Login />
               </Route>
               <Route path="/error/:errorCode" exact>
                 <ErrorDisplayer />
               </Route>
             </Switch>
           </Router>
-        </AuthContext.Provider>*/}
+        </AuthContext.Provider>
       </div>
     </ThemeProvider>
   );

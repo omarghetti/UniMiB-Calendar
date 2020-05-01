@@ -11,7 +11,7 @@ function isLoggedIn(req, res, next) {
   // if they aren't redirect them to the home page
   console.info('You cannot pass');
 
-  return res.redirect('/');
+  return res.redirect('/login');
 }
 
 module.exports = {

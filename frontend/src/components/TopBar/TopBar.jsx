@@ -13,6 +13,8 @@ import { useHistory, useLocation } from "react-router-dom";
 import PersonIcon from "@material-ui/icons/Person";
 import axios from "axios";
 import { AuthContext } from "../../contexts/AuthContext";
+import LogoutIcon from "@material-ui/icons/ExitToApp";
+import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -105,7 +107,15 @@ function TopBar() {
                 <ListItemText primary="Profilo" />
               </MenuItem>
               <MenuItem dense onClick={handleClose}>
-                <button onClick={() => setLogout(true)}>Logout</button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.button}
+                  startIcon={<LogoutIcon />}
+                  onClick={() => setLogout(true)}
+                >
+                  Logout
+                </Button>
               </MenuItem>
             </Menu>
           </div>

@@ -41,7 +41,7 @@ function Login() {
   useEffect(() => {
     async function doLogin() {
       try {
-        const response = await axios.get(`auth/${loginWith}`);
+        const response = await axios.get(`/api/auth/${loginWith}`);
         const user = response.data;
         if (user.token) {
           setUser({ email: user.email, name: user.name, isLoggedIn: true });
@@ -58,8 +58,8 @@ function Login() {
   }, [loginWith, setUser]);
 
   return (
-    <Fragment>
-      <div className={classes.root}>
+    <div className={classes.root}>
+      <Fragment>
         <Typography variant="h4">Benvenuto, effettua il login.</Typography>
         <br />
 
@@ -80,10 +80,10 @@ function Login() {
           color="secondary"
           onClick={() => setLoginWith("mock")}
         >
-          Fake login{" "}
+          Fake login
         </Button>
-      </div>
-    </Fragment>
+      </Fragment>
+    </div>
   );
 }
 

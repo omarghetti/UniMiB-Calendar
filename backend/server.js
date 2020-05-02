@@ -43,30 +43,12 @@ mongoose.connect(process.env.DATABASE_URL, {
 
 const eventsRouter = require('./routes/events');
 
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:3000'); // update to match the domain you will make the request from
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
-});
-
-app.get('/user', (req, res) => {
-  console.info('user', req.user);
-  res.send(req.user);
-});
-
-// route for login form
-// route for processing the login form
-// route for signup form
-// route for processing the signup form
-
-// route for showing the profile page
-app.get('/profile', isLoggedIn, (req, res) => {
-  console.info('Logged in hello', req.user);
+app.get('/api/user', (req, res) => {
   res.send(req.user);
 });
 
 // route for logging out
-app.get('/logout', (req, res) => {
+app.get('/api/logout', (req, res) => {
   console.info('Logged out bye bye');
   req.logout();
   res.send({ redirectUrl: '/login' });
@@ -79,9 +61,9 @@ app.get('/logout', (req, res) => {
 // MOCK ROUTES =======================
 // =====================================
 app.get(
-  '/auth/mock',
+  '/api/auth/mock',
   passport.authenticate('mock', {
-    successRedirect: '/profile',
+    successRedirect: '/api/user',
     failureRedirect: '/login',
     failureFlash: 'Invalid mock credentials.',
   }),
@@ -93,13 +75,13 @@ app.get(
 // send to google to do the authentication
 // profile gets us their basic information including their name
 // email gets their emails
-app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+app.get('/api/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 // the callback after google has authenticated the user
 app.get(
-  '/auth/google/callback',
+  '/api/auth/google/callback',
   passport.authenticate('google', {
-    successRedirect: '/profile',
+    successRedirect: '/api/user',
     failureRedirect: '/login',
     failureFlash: 'Invalid Google credentials.',
   }),

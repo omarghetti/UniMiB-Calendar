@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import AppBar from "@material-ui/core/AppBar";
@@ -9,12 +9,10 @@ import Menu from "@material-ui/core/Menu";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import { useHistory, useLocation } from "react-router-dom";
 import PersonIcon from "@material-ui/icons/Person";
-import axios from "axios";
-import { AuthContext } from "../../contexts/AuthContext";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
 import Button from "@material-ui/core/Button";
+import useLogout from "../../hooks/logoutHook";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -28,13 +26,9 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function TopBar() {
-  let location = useLocation();
-  let history = useHistory();
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
-  const [logout, setLogout] = useState(false);
-  const { setUser } = React.useContext(AuthContext);
 
   const handleMenu = event => {
     setAnchorEl(event.currentTarget);
@@ -44,27 +38,7 @@ function TopBar() {
     setAnchorEl(null);
   };
 
-  useEffect(() => {
-    async function doLogout() {
-      try {
-        const { data } = await axios.get("/logout");
-        if (data.redirectUrl) {
-          setUser({ isLoggedIn: false });
-
-          history.push({
-            pathname: data.redirectUrl,
-            state: { from: location }
-          });
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    if (logout) {
-      doLogout();
-    }
-  }, [logout, history, location, setUser]);
+  const logout = useLogout();
 
   return (
     <React.Fragment>
@@ -82,7 +56,7 @@ function TopBar() {
                 onClick={handleMenu}
                 color="inherit"
               >
-                <Avatar src="/user/" alt={"U"} />
+                <Avatar src="/api/user/" alt={"U"} />
               </IconButton>
             }
             <Menu
@@ -112,7 +86,7 @@ function TopBar() {
                   color="primary"
                   className={classes.button}
                   startIcon={<LogoutIcon />}
-                  onClick={() => setLogout(true)}
+                  onClick={() => logout(true)}
                 >
                   Logout
                 </Button>

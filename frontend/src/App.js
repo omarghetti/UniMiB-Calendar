@@ -14,6 +14,7 @@ import EventDetail from "./components/EventDetail/EventDetail";
 import ErrorDisplayer from "./components/ErrorDisplayer/ErrorDisplayer";
 import Login from "./components/Login/Login";
 import { AuthContext } from "./contexts/AuthContext";
+import FullPageCircularSpinner from "./components/FullPageCircualSpinner/FullPageCircularSpinner";
 
 function App() {
   const [user, setUser] = useState({
@@ -27,8 +28,7 @@ function App() {
   useEffect(() => {
     async function checkAuth() {
       try {
-        console.info("fetching");
-        const response = await axios.get("/user");
+        const response = await axios.get("/api/user");
         const user = response.data;
         if (user.token) {
           setUser({ email: user.email, name: user.name, isLoggedIn: true });
@@ -65,7 +65,9 @@ function App() {
   }
 
   return !isReady ? (
-    <div>Loading...</div>
+    <ThemeProvider theme={theme}>
+      <FullPageCircularSpinner />
+    </ThemeProvider>
   ) : (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -73,8 +75,23 @@ function App() {
         <AuthContext.Provider value={{ user, setUser }}>
           <Router>
             <Switch>
+              <Route path="/" exact>
+                <Redirect
+                  to={{
+                    pathname: "/calendar"
+                  }}
+                />
+              </Route>
               <Route path="/login" exact>
-                <Login />
+                {!user.isLoggedIn ? (
+                  <Login />
+                ) : (
+                  <Redirect
+                    to={{
+                      pathname: "/calendar"
+                    }}
+                  />
+                )}
               </Route>
               <PrivateRoute path="/calendar" exact>
                 <Calendar />

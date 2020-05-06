@@ -18,3 +18,38 @@ import "./commands";
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
+
+before(() => {
+  cy.request("GET", "/api/auth/mock");
+  cy.request("DELETE", "/api/events");
+  cy.request("POST", "/api/events", {
+    title: "Test event",
+    type: "LESSON_CLARIFICATIONS",
+    allDay: false,
+    participants: ["fake-email"]
+  });
+  cy.visit("http://localhost:3000");
+  cy.request("GET", "/api/user")
+    .its("body")
+    .as("currentUser");
+});
+
+beforeEach(() => {
+  Cypress.Cookies.debug(true, { verbose: false });
+
+  Cypress.Cookies.defaults({
+    whitelist: cookie => {
+      // implement your own logic here
+      // if the function returns truthy
+      // then the cookie will not be cleared
+      // before each test runs
+      return true;
+    }
+  });
+});
+
+/*
+after(() => {
+  cy.request('DELETE', '/api/events');
+});
+*/

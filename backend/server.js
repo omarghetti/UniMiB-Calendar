@@ -64,7 +64,7 @@ app.get(
   '/api/auth/mock',
   passport.authenticate('mock', {
     successRedirect: '/api/user',
-    failureRedirect: '/login',
+    // failureRedirect: '/login',
     failureFlash: 'Invalid mock credentials.',
   }),
 );
@@ -82,7 +82,7 @@ app.get(
   '/api/auth/google/callback',
   passport.authenticate('google', {
     successRedirect: '/api/user',
-    failureRedirect: '/login',
+    failureRedirect: '/',
     failureFlash: 'Invalid Google credentials.',
   }),
 );

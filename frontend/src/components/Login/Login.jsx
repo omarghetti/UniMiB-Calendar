@@ -78,6 +78,7 @@ function Login() {
         <Button
           variant="contained"
           color="secondary"
+          data-test-id="button-fake-login"
           onClick={() => setLoginWith("mock")}
         >
           Fake login

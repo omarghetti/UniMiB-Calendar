@@ -1,18 +1,18 @@
-import React, { useContext } from "react";
+import React from "react";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import AppBar from "@material-ui/core/AppBar";
 import Avatar from "@material-ui/core/Avatar";
-import { AuthContext } from "../../contexts/AuthContext";
 import MenuItem from "@material-ui/core/MenuItem";
 import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import { GoogleLogout } from "react-google-login";
-import { useHistory, useLocation } from "react-router-dom";
 import PersonIcon from "@material-ui/icons/Person";
+import LogoutIcon from "@material-ui/icons/ExitToApp";
+import Button from "@material-ui/core/Button";
+import useLogout from "../../hooks/logoutHook";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -26,10 +26,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function TopBar() {
-  let location = useLocation();
-  let history = useHistory();
   const classes = useStyles();
-  let { user, setUser } = useContext(AuthContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
@@ -41,18 +38,7 @@ function TopBar() {
     setAnchorEl(null);
   };
 
-  const Logout = () => {
-    setUser({
-      isAuthenticated: false,
-      name: "",
-      avatar: ""
-    });
-
-    history.push({
-      pathname: "/",
-      state: { from: location }
-    });
-  };
+  const logout = useLogout();
 
   return (
     <React.Fragment>
@@ -62,19 +48,17 @@ function TopBar() {
             UniMiBCalendar
           </Typography>
           <div>
-            <IconButton
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleMenu}
-              color="inherit"
-            >
-              {user.avatar ? (
-                <Avatar src={user.avatar} alt={user.name} />
-              ) : (
-                <div />
-              )}
-            </IconButton>
+            {
+              <IconButton
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleMenu}
+                color="inherit"
+              >
+                <Avatar src="/api/user/" alt={"U"} />
+              </IconButton>
+            }
             <Menu
               id="menu-appbar"
               anchorEl={anchorEl}
@@ -97,11 +81,15 @@ function TopBar() {
                 <ListItemText primary="Profilo" />
               </MenuItem>
               <MenuItem dense onClick={handleClose}>
-                <GoogleLogout
-                  clientId="645362289460-ulika5v4o1a96cpfibbv7q73vfoihnr2.apps.googleusercontent.com"
-                  buttonText="Logout"
-                  onLogoutSuccess={Logout}
-                />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.button}
+                  startIcon={<LogoutIcon />}
+                  onClick={() => logout(true)}
+                >
+                  Logout
+                </Button>
               </MenuItem>
             </Menu>
           </div>

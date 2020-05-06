@@ -1,4 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { ThemeProvider } from "@material-ui/styles";
+import { CssBaseline } from "@material-ui/core";
+import theme from "./themes/theme";
+import axios from "axios";
 import {
   BrowserRouter as Router,
   Redirect,
@@ -6,44 +10,51 @@ import {
   Switch
 } from "react-router-dom";
 import Calendar from "./components/Calendar/Calendar";
-import Login from "./components/Login/Login";
-import { AuthContext } from "./contexts/AuthContext";
-import { ThemeProvider } from "@material-ui/styles";
-import { CssBaseline } from "@material-ui/core";
-import theme from "./themes/theme";
-import TopBar from "./components/TopBar/TopBar";
 import EventDetail from "./components/EventDetail/EventDetail";
 import ErrorDisplayer from "./components/ErrorDisplayer/ErrorDisplayer";
-import axios from "axios";
+import Login from "./components/Login/Login";
+import { AuthContext } from "./contexts/AuthContext";
+import FullPageCircularSpinner from "./components/FullPageCircualSpinner/FullPageCircularSpinner";
 
 function App() {
-  const initialState = localStorage.getItem("auth")
-    ? JSON.parse(localStorage.getItem("auth"))
-    : {
-        isAuthenticated: false,
-        name: "",
-        avatar: ""
-      };
-  const [user, setUser] = useState(initialState);
+  const [user, setUser] = useState({
+    isAuthenticated: false,
+    name: "",
+    avatar: ""
+  });
+
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem("auth", JSON.stringify(user));
-    axios.defaults.headers.common["Authorization"] = user.tokenId;
-  }, [user]);
+    async function checkAuth() {
+      try {
+        const response = await axios.get("/api/user");
+        const user = response.data;
+        if (user.token) {
+          setUser({ email: user.email, name: user.name, isLoggedIn: true });
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    checkAuth().then(() => setIsReady(true));
+  }, []);
 
   function PrivateRoute({ children, ...rest }) {
-    axios.defaults.headers.common["Authorization"] = user.tokenId;
+    const { user } = React.useContext(AuthContext);
 
+    console.info("context user is ", user);
     return (
       <Route
         {...rest}
         render={({ location }) =>
-          user.isAuthenticated ? (
+          user.isLoggedIn ? (
             children
           ) : (
             <Redirect
               to={{
-                pathname: "/",
+                pathname: "/login",
                 state: { from: location }
               }}
             />
@@ -53,22 +64,40 @@ function App() {
     );
   }
 
-  return (
+  return !isReady ? (
+    <ThemeProvider theme={theme}>
+      <FullPageCircularSpinner />
+    </ThemeProvider>
+  ) : (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <div className="App">
         <AuthContext.Provider value={{ user, setUser }}>
           <Router>
-            <TopBar />
             <Switch>
+              <Route path="/" exact>
+                <Redirect
+                  to={{
+                    pathname: "/calendar"
+                  }}
+                />
+              </Route>
+              <Route path="/login" exact>
+                {!user.isLoggedIn ? (
+                  <Login />
+                ) : (
+                  <Redirect
+                    to={{
+                      pathname: "/calendar"
+                    }}
+                  />
+                )}
+              </Route>
               <PrivateRoute path="/calendar" exact>
                 <Calendar />
               </PrivateRoute>
-              <PrivateRoute path="/calendar/:eventId">
+              <Route path="/calendar/:eventId">
                 <EventDetail />
-              </PrivateRoute>
-              <Route path="/" exact>
-                <Login />
               </Route>
               <Route path="/error/:errorCode" exact>
                 <ErrorDisplayer />

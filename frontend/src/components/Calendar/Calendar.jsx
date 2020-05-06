@@ -15,6 +15,7 @@ import { useHistory, useLocation } from "react-router-dom";
 import { typeMapper } from "../../utils/eventUtils";
 import * as R from "ramda";
 import { AuthContext } from "../../contexts/AuthContext";
+import TopBar from "../TopBar/TopBar";
 
 function Calendar() {
   let location = useLocation();
@@ -70,6 +71,7 @@ function Calendar() {
 
   return (
     <Fragment>
+      <TopBar />
       <Swipeable
         onSwipedRight={previous}
         onSwipedLeft={next}

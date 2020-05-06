@@ -1,106 +1,89 @@
-import React, { Fragment, useEffect } from "react";
-import GoogleLogin from "react-google-login";
+import React, { Fragment, useEffect, useState } from "react";
 import Typography from "@material-ui/core/Typography";
 import { useHistory, useLocation } from "react-router-dom";
+import axios from "axios";
 import { AuthContext } from "../../contexts/AuthContext";
+import Button from "@material-ui/core/Button";
+import { ReactComponent as IcoGoogleLogin } from "../../assets/svg/google-logo.svg";
+import makeStyles from "@material-ui/core/styles/makeStyles";
 
-const divStyle = {
-  textAlign: "center",
-  marginTop: "128px",
-  padding: "16px"
-};
+const useStyles = makeStyles(theme => ({
+  root: {
+    textAlign: "center",
+    marginTop: "128px",
+    padding: "16px"
+  },
+  googleIcon: {
+    height: "16px"
+  },
+  googleLoginButton: {
+    backgroundColor: "#fff"
+  }
+}));
 
 function Login() {
-  let history = useHistory();
-  let location = useLocation();
-  let { user, setUser } = React.useContext(AuthContext);
+  const history = useHistory();
+  const location = useLocation();
+  const classes = useStyles();
+  const [loginWith, setLoginWith] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { setUser } = React.useContext(AuthContext);
 
   useEffect(() => {
-    if (user.isAuthenticated) {
+    if (isLoggedIn) {
       history.push({
         pathname: "/calendar",
         state: { from: location }
       });
     }
-  }, [history, location, user]);
+  }, [isLoggedIn, history, location]);
 
-  const responseGoogleSuccess = response => {
-    console.info("Authentication successful.");
-    setUser({
-      isAuthenticated: true,
-      name: response.profileObj.name,
-      email: response.profileObj.email,
-      avatar: response.profileObj.imageUrl,
-      tokenId: response.tokenId
-    });
+  useEffect(() => {
+    async function doLogin() {
+      try {
+        const response = await axios.get(`/api/auth/${loginWith}`);
+        const user = response.data;
+        if (user.token) {
+          setUser({ email: user.email, name: user.name, isLoggedIn: true });
+          setIsLoggedIn(true);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
 
-    if (process.env.NODE_ENV === "development")
-      console.info("Token id: ", response.tokenId);
-
-    history.push({
-      pathname: "/calendar",
-      state: { from: location }
-    });
-  };
-
-  const responseGoogleFailure = response => {
-    console.error("Authentication failed.");
-
-    setUser({
-      isAuthenticated: false,
-      name: "",
-      avatar: ""
-    });
-  };
+    if (loginWith) {
+      doLogin();
+    }
+  }, [loginWith, setUser]);
 
   return (
-    <Fragment>
-      {user.isAuthenticated ? (
-        <div style={divStyle}>
-          <Typography variant="h4">
-            Sei già loggato, effettua il logout se vuoi cambiare account.
-          </Typography>
-        </div>
-      ) : (
-        <div style={divStyle}>
-          <Typography variant="h4">
-            Accedi con il tuo account di Ateneo.
-          </Typography>
-          <br />
-          <div>
-            <GoogleLogin
-              clientId="645362289460-ulika5v4o1a96cpfibbv7q73vfoihnr2.apps.googleusercontent.com"
-              buttonText="Login"
-              onSuccess={responseGoogleSuccess}
-              onFailure={responseGoogleFailure}
-              cookiePolicy={"single_host_origin"}
-              isSignedIn={true}
-              className={"login-button"}
-              uxMode={"redirect"}
-            />
-            <div className={"spinner-wrapper"}>
-              <svg
-                className="spinner"
-                width="65px"
-                height="65px"
-                viewBox="0 0 66 66"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle
-                  className="path"
-                  fill="none"
-                  strokeWidth="6"
-                  strokeLinecap="round"
-                  cx="33"
-                  cy="33"
-                  r="30"
-                />
-              </svg>
-            </div>
-          </div>
-        </div>
-      )}
-    </Fragment>
+    <div className={classes.root}>
+      <Fragment>
+        <Typography variant="h4">Benvenuto, effettua il login.</Typography>
+        <br />
+
+        <Button
+          variant="contained"
+          className={classes.googleLoginButton}
+          startIcon={<IcoGoogleLogin className={classes.googleIcon} />}
+          onClick={() => setLoginWith("google")}
+        >
+          Login con Google
+        </Button>
+
+        <br />
+        <br />
+
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => setLoginWith("mock")}
+        >
+          Fake login
+        </Button>
+      </Fragment>
+    </div>
   );
 }
 

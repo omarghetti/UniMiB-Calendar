@@ -4,6 +4,7 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 const passport = require('passport');
+const cors = require('cors');
 require('./config/passport.js')(passport);
 const bodyParser = require('body-parser');
 
@@ -23,11 +24,18 @@ db.once('open', () => {
 
 const PORT = process.env.PORT || 8080;
 const HOST = '0.0.0.0';
-
 const app = express();
 app.use(express.json());
 
 app.use(express.static(path.join(__dirname, 'ui')));
+app.use(
+  cors({
+    origin: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    exposedHeaders: ['x-auth-token'],
+  }),
+);
 
 // passport setup
 app.use(express.static('public'));
@@ -53,9 +61,6 @@ app.get('/api/logout', (req, res) => {
   req.logout();
   res.send({ redirectUrl: '/login' });
 });
-
-// facebook routes
-// twitter routes
 
 // =====================================
 // MOCK ROUTES =======================
@@ -84,6 +89,28 @@ app.get(
     successRedirect: '/api/user',
     failureRedirect: '/login',
     failureFlash: 'Invalid Google credentials.',
+  }),
+);
+
+// Twitter Routes
+app.get('/api/auth/twitter', passport.authenticate('twitter'));
+app.get(
+  'api/auth/twitter/callback',
+  passport.authenticate('twitter', {
+    successRedirect: '/api/user',
+    failureRedirect: '/login',
+    failureFlash: 'twitter credentials invalid',
+  }),
+);
+
+// Facebook Routes
+app.get('/api/auth/facebook', passport.authenticate('facebook'));
+app.get(
+  'api/auth/facebook/callback',
+  passport.authenticate('facebook', {
+    successRedirect: '/api/user',
+    failureRedirect: '/login',
+    failureFlash: 'facebook credentials invalid',
   }),
 );
 

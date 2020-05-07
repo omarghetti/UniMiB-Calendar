@@ -4,8 +4,8 @@
 // config/passport.js
 
 // load all the things we need
-// const FacebookStrategy = require('passport-facebook').Strategy;
-// const TwitterStrategy = require('passport-twitter').Strategy;
+const FacebookStrategy = require('passport-facebook').Strategy;
+const TwitterStrategy = require('passport-twitter').Strategy;
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const MockStrategy = require('passport-mock-strategy');
 
@@ -123,6 +123,93 @@ module.exports = function(passport) {
               return done(null, newUser);
             });
 
+            return null;
+          });
+        });
+      },
+    ),
+  );
+
+  //= ==============================================================
+  // TWITTER =======================================================
+  //= ==============================================================
+
+  passport.use(
+    new TwitterStrategy(
+      {
+        consumerKey: configAuth.twitterAuth.consumerKey,
+        consumerSecret: configAuth.twitterAuth.consumerSecret,
+        callbackURL: configAuth.twitterAuth.callbackURL,
+      },
+      function(token, tokenSecret, profile, done) {
+        process.nextTick(function() {
+          User.findOne({ profileId: profile.id }, function(err, user) {
+            if (err) {
+              return done(err);
+            }
+
+            if (user) {
+              return done(null, user);
+            }
+
+            const newUser = new User();
+
+            newUser.profileId = profile.id;
+            newUser.email = profile.email[0].value;
+            newUser.name = profile.name;
+            newUser.token = profile.token;
+
+            console.info('newUser', newUser);
+
+            newUser.save(function(e) {
+              if (e) {
+                console.info('error saving user', e.message());
+              }
+              return done(null, newUser);
+            });
+            return null;
+          });
+        });
+      },
+    ),
+  );
+
+  //= =======================================================================
+  // FACEBOOK ===============================================================
+  //= =======================================================================
+  passport.use(
+    new FacebookStrategy(
+      {
+        clientID: configAuth.facebookAuth.clientID,
+        clientSecret: configAuth.facebookAuth.clientSecret,
+        callbackURL: configAuth.facebookAuth.callbackURL,
+      },
+      function(accessToken, refreshToken, profile, done) {
+        process.nextTick(function() {
+          User.findOne({ profileId: profile.id }, function(err, user) {
+            if (err) {
+              return done(err);
+            }
+
+            if (user) {
+              return done(null, user);
+            }
+
+            const newUser = new User();
+
+            newUser.profileId = profile.id;
+            newUser.email = profile.email[0].value;
+            newUser.name = profile.name;
+            newUser.token = profile.token;
+
+            console.info('newUser', newUser);
+
+            newUser.save(function(e) {
+              if (e) {
+                console.info('error saving user', e.message());
+              }
+              return done(null, newUser);
+            });
             return null;
           });
         });

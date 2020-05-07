@@ -5,9 +5,11 @@ import axios from "axios";
 import { AuthContext } from "../../contexts/AuthContext";
 import Button from "@material-ui/core/Button";
 import { ReactComponent as IcoGoogleLogin } from "../../assets/svg/google-logo.svg";
+import { ReactComponent as IconFacebook } from "../../assets/svg/icons8-facebook.svg";
+import { ReactComponent as IconTwitter } from "../../assets/svg/icons8-twitter.svg";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   root: {
     textAlign: "center",
     marginTop: "128px",
@@ -16,7 +18,19 @@ const useStyles = makeStyles(theme => ({
   googleIcon: {
     height: "16px"
   },
+  facebookIcon: {
+    height: "24px"
+  },
+  twitterIcon: {
+    height: "24px"
+  },
   googleLoginButton: {
+    backgroundColor: "#fff"
+  },
+  fbLoginButton: {
+    backgroundColor: "#fff"
+  },
+  twLoginButton: {
     backgroundColor: "#fff"
   }
 }));
@@ -70,6 +84,30 @@ function Login() {
           onClick={() => setLoginWith("google")}
         >
           Login con Google
+        </Button>
+
+        <br />
+        <br />
+
+        <Button
+          variant="contained"
+          className={classes.fbLoginButton}
+          startIcon={<IconFacebook className={classes.facebookIcon} />}
+          onClick={() => setLoginWith("facebook")}
+        >
+          Login con Facebook
+        </Button>
+
+        <br />
+        <br />
+
+        <Button
+          variant="contained"
+          className={classes.twLoginButton}
+          startIcon={<IconTwitter className={classes.twitterIcon} />}
+          onClick={() => setLoginWith("twitter")}
+        >
+          Login con Twitter
         </Button>
 
         <br />

@@ -122,7 +122,7 @@ app.use('/api/events', isLoggedIn, eventsRouter);
 
 app.get('/app', isLoggedIn, (req, res) => {
   console.info('serve app');
-  res.sendFile(path.join(__dirname, 'ui', 'app', 'app.html'));
+  res.sendFile(path.join(__dirname, 'ui', 'app', 'index.html'));
 });
 
 app.listen(PORT, HOST);

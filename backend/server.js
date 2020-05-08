@@ -27,7 +27,6 @@ const HOST = '0.0.0.0';
 const app = express();
 app.use(express.json());
 
-app.use(express.static(path.join(__dirname, 'ui')));
 app.use(
   cors({
     origin: true,
@@ -39,6 +38,7 @@ app.use(
 
 // passport setup
 app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'ui', 'login')));
 app.use(session({ secret: 'cats' }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(passport.initialize());
@@ -51,6 +51,10 @@ mongoose.connect(process.env.DATABASE_URL, {
 
 const eventsRouter = require('./routes/events');
 
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'ui', 'login', 'index.html'));
+});
+
 app.get('/api/user', (req, res) => {
   res.send(req.user);
 });
@@ -59,7 +63,7 @@ app.get('/api/user', (req, res) => {
 app.get('/api/logout', (req, res) => {
   console.info('Logged out bye bye');
   req.logout();
-  res.send({ redirectUrl: '/login' });
+  res.redirect('/login');
 });
 
 // =====================================
@@ -68,7 +72,7 @@ app.get('/api/logout', (req, res) => {
 app.get(
   '/api/auth/mock',
   passport.authenticate('mock', {
-    successRedirect: '/api/user',
+    successRedirect: '/app',
     failureRedirect: '/login',
     failureFlash: 'Invalid mock credentials.',
   }),
@@ -82,11 +86,11 @@ app.get(
 // email gets their emails
 app.get('/api/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-// the callback after google has authenticated the user
+// e callback after google has authenticated the user
 app.get(
-  '/api/auth/google/callback',
+  '/auth/google/callback',
   passport.authenticate('google', {
-    successRedirect: '/api/user',
+    successRedirect: '/app',
     failureRedirect: '/login',
     failureFlash: 'Invalid Google credentials.',
   }),
@@ -95,9 +99,9 @@ app.get(
 // Twitter Routes
 app.get('/api/auth/twitter', passport.authenticate('twitter'));
 app.get(
-  'api/auth/twitter/callback',
+  '/auth/twitter/callback',
   passport.authenticate('twitter', {
-    successRedirect: '/api/user',
+    successRedirect: '/app',
     failureRedirect: '/login',
     failureFlash: 'twitter credentials invalid',
   }),
@@ -106,9 +110,9 @@ app.get(
 // Facebook Routes
 app.get('/api/auth/facebook', passport.authenticate('facebook'));
 app.get(
-  'api/auth/facebook/callback',
+  '/auth/facebook/callback',
   passport.authenticate('facebook', {
-    successRedirect: '/api/user',
+    successRedirect: '/app',
     failureRedirect: '/login',
     failureFlash: 'facebook credentials invalid',
   }),
@@ -116,8 +120,9 @@ app.get(
 
 app.use('/api/events', isLoggedIn, eventsRouter);
 
-app.get('/*', isLoggedIn, (req, res) => {
-  res.sendFile(path.join(__dirname, 'ui', 'index.html'));
+app.get('/app', isLoggedIn, (req, res) => {
+  console.info('serve app');
+  res.sendFile(path.join(__dirname, 'ui', 'app', 'app.html'));
 });
 
 app.listen(PORT, HOST);

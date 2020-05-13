@@ -12,15 +12,12 @@ export default function useLogout() {
   useEffect(() => {
     async function doLogout() {
       try {
-        const { data } = await axios.get("/api/logout");
-        if (data.redirectUrl) {
-          setUser({ isLoggedIn: false });
-
-          history.push({
-            pathname: data.redirectUrl,
-            state: { from: location }
-          });
-        }
+        await axios.get("/api/logout");
+        setUser({ isLoggedIn: false });
+        history.push({
+          pathname: (window.location.href = "http://localhost:8080/login"),
+          state: { from: location }
+        });
       } catch (err) {
         console.error(err);
       }

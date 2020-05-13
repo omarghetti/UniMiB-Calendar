@@ -61,9 +61,9 @@ app.get('/api/user', (req, res) => {
 
 // route for logging out
 app.get('/api/logout', (req, res) => {
-  console.info('Logged out bye bye');
   req.logout();
   res.redirect('/login');
+  console.info('Logged out bye bye');
 });
 
 // =====================================
@@ -122,7 +122,7 @@ app.use('/api/events', isLoggedIn, eventsRouter);
 
 app.get('/app', isLoggedIn, (req, res) => {
   console.info('serve app');
-  res.sendFile(path.join(__dirname, 'ui', 'app', 'index.html'));
+  res.redirect('http://localhost:3000/calendar');
 });
 
 app.listen(PORT, HOST);

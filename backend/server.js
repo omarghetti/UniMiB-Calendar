@@ -37,8 +37,9 @@ app.use(
 );
 
 // passport setup
-app.use(express.static('public'));
+app.use(express.static('static'));
 app.use(express.static(path.join(__dirname, 'ui', 'login')));
+app.use(express.static(path.join(__dirname, 'ui', 'app')));
 app.use(session({ secret: 'cats' }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(passport.initialize());
@@ -51,7 +52,7 @@ mongoose.connect(process.env.DATABASE_URL, {
 
 const eventsRouter = require('./routes/events');
 
-app.get('/login', (req, res) => {
+app.get('/api/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'ui', 'login', 'index.html'));
 });
 
@@ -62,7 +63,7 @@ app.get('/api/user', (req, res) => {
 // route for logging out
 app.get('/api/logout', (req, res) => {
   req.logout();
-  res.redirect('/login');
+  res.redirect('/api/login');
   console.info('Logged out bye bye');
 });
 
@@ -73,7 +74,7 @@ app.get(
   '/api/auth/mock',
   passport.authenticate('mock', {
     successRedirect: '/app',
-    failureRedirect: '/login',
+    failureRedirect: '/api/login',
     failureFlash: 'Invalid mock credentials.',
   }),
 );
@@ -91,7 +92,7 @@ app.get(
   '/auth/google/callback',
   passport.authenticate('google', {
     successRedirect: '/app',
-    failureRedirect: '/login',
+    failureRedirect: '/api/login',
     failureFlash: 'Invalid Google credentials.',
   }),
 );
@@ -102,7 +103,7 @@ app.get(
   '/auth/twitter/callback',
   passport.authenticate('twitter', {
     successRedirect: '/app',
-    failureRedirect: '/login',
+    failureRedirect: '/api/login',
     failureFlash: 'twitter credentials invalid',
   }),
 );
@@ -113,7 +114,7 @@ app.get(
   '/auth/facebook/callback',
   passport.authenticate('facebook', {
     successRedirect: '/app',
-    failureRedirect: '/login',
+    failureRedirect: '/api/login',
     failureFlash: 'facebook credentials invalid',
   }),
 );
@@ -122,7 +123,7 @@ app.use('/api/events', isLoggedIn, eventsRouter);
 
 app.get('/app', isLoggedIn, (req, res) => {
   console.info('serve app');
-  res.redirect('http://localhost:3000/calendar');
+  res.sendFile(path.join(__dirname, 'ui', 'app', 'index.html'));
 });
 
 app.listen(PORT, HOST);

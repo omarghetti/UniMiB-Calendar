@@ -15,7 +15,7 @@ export default function useLogout() {
         await axios.get("/api/logout");
         setUser({ isLoggedIn: false });
         history.push({
-          pathname: (window.location.href = "http://localhost:8080/login"),
+          pathname: (window.location.href = "/api/login"),
           state: { from: location }
         });
       } catch (err) {

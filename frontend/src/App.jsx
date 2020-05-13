@@ -4,7 +4,7 @@ import { CssBaseline } from "@material-ui/core";
 import theme from "./themes/theme";
 import axios from "axios";
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Redirect,
   Route,
   Switch
@@ -53,7 +53,7 @@ function App() {
           ) : (
             <Redirect
               to={{
-                pathname: "/login",
+                pathname: "/api/login",
                 state: { from: location }
               }}
             />

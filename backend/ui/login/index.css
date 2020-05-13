@@ -1,0 +1,19 @@
+.login-buttons {
+  text-align: center;
+  margin-top: 128px;
+  padding: 16px;
+}
+.google-svg {
+  width: 16px;
+  height: 16px;
+}
+
+.facebook-svg {
+  width: 20px;
+  height: 20px;
+}
+
+.twitter-svg {
+  width: 20px;
+  height: 20px;
+}

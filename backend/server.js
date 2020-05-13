@@ -108,7 +108,7 @@ app.get(
 );
 
 // Facebook Routes
-app.get('/api/auth/facebook', passport.authenticate('facebook'));
+app.get('/api/auth/facebook', passport.authenticate('facebook', { scope: ['email'] }));
 app.get(
   '/auth/facebook/callback',
   passport.authenticate('facebook', {
@@ -122,7 +122,7 @@ app.use('/api/events', isLoggedIn, eventsRouter);
 
 app.get('/app', isLoggedIn, (req, res) => {
   console.info('serve app');
-  res.sendFile(path.join(__dirname, 'ui', 'app', 'app.html'));
+  res.sendFile(path.join(__dirname, 'ui', 'app', 'index.html'));
 });
 
 app.listen(PORT, HOST);

@@ -139,6 +139,8 @@ module.exports = function(passport) {
       {
         consumerKey: configAuth.twitterAuth.consumerKey,
         consumerSecret: configAuth.twitterAuth.consumerSecret,
+        userProfileURL:
+          'https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true',
         callbackURL: configAuth.twitterAuth.callbackURL,
       },
       function(token, tokenSecret, profile, done) {
@@ -155,15 +157,15 @@ module.exports = function(passport) {
             const newUser = new User();
 
             newUser.profileId = profile.id;
-            newUser.email = profile.email[0].value;
-            newUser.name = profile.name;
-            newUser.token = profile.token;
+            newUser.token = token;
+            newUser.name = profile.displayName;
+            newUser.email = profile.emails[0].value;
 
             console.info('newUser', newUser);
 
             newUser.save(function(e) {
               if (e) {
-                console.info('error saving user', e.message());
+                console.info('error saving user', e);
               }
               return done(null, newUser);
             });
@@ -183,6 +185,7 @@ module.exports = function(passport) {
         clientID: configAuth.facebookAuth.clientID,
         clientSecret: configAuth.facebookAuth.clientSecret,
         callbackURL: configAuth.facebookAuth.callbackURL,
+        profileFields: ['emails', 'displayName'],
       },
       function(accessToken, refreshToken, profile, done) {
         process.nextTick(function() {
@@ -198,15 +201,15 @@ module.exports = function(passport) {
             const newUser = new User();
 
             newUser.profileId = profile.id;
-            newUser.email = profile.email[0].value;
-            newUser.name = profile.name;
-            newUser.token = profile.token;
+            newUser.email = profile.emails[0].value;
+            newUser.name = profile.displayName;
+            newUser.token = accessToken;
 
             console.info('newUser', newUser);
 
             newUser.save(function(e) {
               if (e) {
-                console.info('error saving user', e.message());
+                console.info('error saving user', e);
               }
               return done(null, newUser);
             });

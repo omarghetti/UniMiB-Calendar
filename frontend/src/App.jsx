@@ -12,7 +12,6 @@ import {
 import Calendar from "./components/Calendar/Calendar";
 import EventDetail from "./components/EventDetail/EventDetail";
 import ErrorDisplayer from "./components/ErrorDisplayer/ErrorDisplayer";
-import Login from "./components/Login/Login";
 import { AuthContext } from "./contexts/AuthContext";
 import FullPageCircularSpinner from "./components/FullPageCircualSpinner/FullPageCircularSpinner";
 
@@ -81,17 +80,6 @@ function App() {
                     pathname: "/calendar"
                   }}
                 />
-              </Route>
-              <Route path="/login" exact>
-                {!user.isLoggedIn ? (
-                  <Login />
-                ) : (
-                  <Redirect
-                    to={{
-                      pathname: "/calendar"
-                    }}
-                  />
-                )}
               </Route>
               <PrivateRoute path="/calendar" exact>
                 <Calendar />

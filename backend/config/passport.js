@@ -66,6 +66,7 @@ module.exports = function(passport) {
           newUser.token = 'fake-token';
           newUser.name = 'fake-name';
           newUser.email = 'fake-email';
+          newUser.avatar = 'http://www.nretnil.com/avatar/LawrenceEzekielAmos.png';
 
           console.info('new user', newUser);
 
@@ -112,6 +113,7 @@ module.exports = function(passport) {
             newUser.token = token;
             newUser.name = profile.displayName;
             newUser.email = profile.emails[0].value; // pull the first email
+            newUser.avatar = profile.photos[0].value;
 
             console.info('new user', newUser);
 
@@ -160,6 +162,7 @@ module.exports = function(passport) {
             newUser.token = token;
             newUser.name = profile.displayName;
             newUser.email = profile.emails[0].value;
+            newUser.avatar = profile.photos[0].value;
 
             console.info('newUser', newUser);
 
@@ -185,7 +188,7 @@ module.exports = function(passport) {
         clientID: configAuth.facebookAuth.clientID,
         clientSecret: configAuth.facebookAuth.clientSecret,
         callbackURL: configAuth.facebookAuth.callbackURL,
-        profileFields: ['emails', 'displayName'],
+        profileFields: ['emails', 'displayName', 'photos'],
       },
       function(accessToken, refreshToken, profile, done) {
         process.nextTick(function() {
@@ -204,6 +207,7 @@ module.exports = function(passport) {
             newUser.email = profile.emails[0].value;
             newUser.name = profile.displayName;
             newUser.token = accessToken;
+            newUser.avatar = profile.photos[0].value;
 
             console.info('newUser', newUser);
 

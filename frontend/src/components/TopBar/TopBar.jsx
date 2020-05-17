@@ -13,6 +13,7 @@ import PersonIcon from "@material-ui/icons/Person";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
 import Button from "@material-ui/core/Button";
 import useLogout from "../../hooks/logoutHook";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -29,6 +30,7 @@ function TopBar() {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const { user } = React.useContext(AuthContext);
 
   const handleMenu = event => {
     setAnchorEl(event.currentTarget);
@@ -56,7 +58,7 @@ function TopBar() {
                 onClick={handleMenu}
                 color="inherit"
               >
-                <Avatar src="/api/user/" alt={"U"} />
+                <Avatar src={user.avatar} alt={"U"} />
               </IconButton>
             }
             <Menu

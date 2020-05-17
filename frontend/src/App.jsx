@@ -30,7 +30,12 @@ function App() {
         const response = await axios.get("/api/user");
         const user = response.data;
         if (user.token) {
-          setUser({ email: user.email, name: user.name, isLoggedIn: true });
+          setUser({
+            email: user.email,
+            name: user.name,
+            avatar: user.avatar,
+            isLoggedIn: true
+          });
         }
       } catch (err) {
         console.error(err);

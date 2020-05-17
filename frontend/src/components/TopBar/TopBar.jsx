@@ -31,6 +31,7 @@ function TopBar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const { user } = React.useContext(AuthContext);
+  const avatar = user ? user.avatar : "api/user/";
 
   const handleMenu = event => {
     setAnchorEl(event.currentTarget);
@@ -58,7 +59,7 @@ function TopBar() {
                 onClick={handleMenu}
                 color="inherit"
               >
-                <Avatar src={user.avatar} alt={"U"} />
+                <Avatar src={avatar} alt={"U"} />
               </IconButton>
             }
             <Menu

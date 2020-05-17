@@ -15,6 +15,7 @@ import TopBar from "./components/TopBar/TopBar";
 import EventDetail from "./components/EventDetail/EventDetail";
 import ErrorDisplayer from "./components/ErrorDisplayer/ErrorDisplayer";
 import axios from "axios";
+import EventEditor from "./components/EventEditor/EventEditor";
 
 function App() {
   const initialState = localStorage.getItem("auth")
@@ -69,6 +70,9 @@ function App() {
               </PrivateRoute>
               <Route path="/" exact>
                 <Login />
+              </Route>
+              <Route path="/new" exact>
+                <EventEditor />
               </Route>
               <Route path="/error/:errorCode" exact>
                 <ErrorDisplayer />

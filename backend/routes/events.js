@@ -6,10 +6,20 @@ const Event = require('../models/event');
 // Get all events
 router.get('/', async (req, res) => {
   try {
-    const events = await Event.find({ participants: req.userEmail }).select(
-      '_id title start end allDay type',
-    );
+    const events = await Event.find().select('_id title start end allDay type');
     res.json(events);
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+});
+
+// Get all event types
+router.get('/types', async (req, res) => {
+  try {
+    const types = Event.schema.path('type').enumValues;
+    res.json(types);
   } catch (err) {
     res.status(500).json({
       message: err.message,
@@ -20,7 +30,7 @@ router.get('/', async (req, res) => {
 // Get one event by id
 router.get('/:id', async (req, res) => {
   try {
-    const event = await Event.findOne({ participants: req.userEmail, _id: req.params.id });
+    const event = await Event.findOne({ _id: req.params.id });
     if (!event) {
       res.status(404).json({
         message: 'Not found.',

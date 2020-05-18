@@ -8,7 +8,14 @@ import { useHistory } from "react-router-dom";
 import NativeSelect from "@material-ui/core/NativeSelect";
 import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
-import { DateTime } from "luxon";
+import moment from "moment";
+import Select from "@material-ui/core/Select";
+import Input from "@material-ui/core/Input";
+import Chip from "@material-ui/core/Chip";
+import MenuItem from "@material-ui/core/MenuItem";
+import TextField from "@material-ui/core/TextField";
+import SaveIcon from "@material-ui/icons/Save";
+import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles(theme => ({
   header: {
@@ -24,17 +31,35 @@ const useStyles = makeStyles(theme => ({
   },
   selectEmpty: {
     marginTop: theme.spacing(2)
+  },
+  chips: {
+    display: "flex",
+    flexWrap: "wrap"
+  },
+  chip: {
+    margin: 2
   }
 }));
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250
+    }
+  }
+};
 
 function EventEditor() {
   const classes = useStyles();
   const [newEvent, setNewEvent] = useState({});
   const [isFetching, setIsFetching] = useState(true);
   const [eventTypes, setEventTypes] = useState([]);
-  const [startDate, setStartDate] = useState(
-    DateTime.fromISO(new Date().toISOString())
-  );
+  const [startDate, setStartDate] = useState(moment());
+  const [personName, setPersonName] = React.useState([]);
+
   const history = useHistory();
 
   const setFetchingCompleted = useCallback(() => {
@@ -65,6 +90,10 @@ function EventEditor() {
       ...newEvent,
       [field]: value
     });
+  };
+
+  const handleParticipantsChange = event => {
+    setPersonName(event.target.value);
   };
 
   function renderDetail() {
@@ -109,6 +138,63 @@ function EventEditor() {
             onChange={setStartDate}
           />
         </MuiPickersUtilsProvider>
+        <br />
+        <br />
+        <FormControl className={classes.formControl}>
+          <InputLabel id="demo-mutiple-chip-label">Partecipanti</InputLabel>
+          <Select
+            labelId="demo-mutiple-chip-label"
+            id="demo-mutiple-chip"
+            multiple
+            value={personName}
+            onChange={handleParticipantsChange}
+            input={<Input id="select-multiple-chip" />}
+            renderValue={selected => (
+              <div className={classes.chips}>
+                {selected.map(value => (
+                  <Chip key={value} label={value} className={classes.chip} />
+                ))}
+              </div>
+            )}
+            MenuProps={MenuProps}
+          >
+            {eventTypes.map(name => (
+              <MenuItem key={name} value={name}>
+                {name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <br />
+        <br />
+
+        <FormControl className={classes.formControl}>
+          <TextField required id="standard-required" label="Luogo" />
+        </FormControl>
+        <br />
+        <br />
+
+        <FormControl className={classes.formControl}>
+          <TextField
+            id="standard-multiline-static"
+            label="Note"
+            multiline
+            rows={4}
+          />
+        </FormControl>
+        <br />
+        <br />
+        <FormControl>
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            className={classes.button}
+            startIcon={<SaveIcon />}
+          >
+            Save
+          </Button>
+        </FormControl>
       </div>
     );
   }

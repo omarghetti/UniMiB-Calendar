@@ -88,9 +88,9 @@ function App() {
               </Route>
               <Route path="/_=_" exact>
                 <Redirect
-                    to={{
-                      pathname: "/calendar"
-                    }}
+                  to={{
+                    pathname: "/calendar"
+                  }}
                 />
               </Route>
               <PrivateRoute path="/calendar" exact>

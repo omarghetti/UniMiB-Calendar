@@ -6,7 +6,7 @@ const Event = require('../models/event');
 // Get all events
 router.get('/', async (req, res) => {
   try {
-    const events = await Event.find({ participants: req.userEmail }).select(
+    const events = await Event.find({ participants: req.user.email }).select(
       '_id title start end allDay type',
     );
     res.json(events);
@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
 // Get one event by id
 router.get('/:id', async (req, res) => {
   try {
-    const event = await Event.findOne({ participants: req.userEmail, _id: req.params.id });
+    const event = await Event.findOne({ participants: req.user.email, _id: req.params.id });
     if (!event) {
       res.status(404).json({
         message: 'Not found.',

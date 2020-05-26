@@ -28,10 +28,10 @@ before(() => {
     allDay: false,
     participants: ["fake-email"]
   });
-  cy.visit("http://localhost:3000");
   cy.request("GET", "/api/user")
     .its("body")
     .as("currentUser");
+  cy.visit("http://localhost:8080/app");
 });
 
 beforeEach(() => {

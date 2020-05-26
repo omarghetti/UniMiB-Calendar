@@ -126,5 +126,10 @@ app.get('/app', isLoggedIn, (req, res) => {
   res.sendFile(path.join(__dirname, 'ui', 'app', 'index.html'));
 });
 
+app.get('/*', isLoggedIn, (req, res) => {
+  console.info('serve app');
+  res.sendFile(path.join(__dirname, 'ui', 'app', 'index.html'));
+});
+
 app.listen(PORT, HOST);
 console.info(`Listening on ${HOST}:${PORT}`);

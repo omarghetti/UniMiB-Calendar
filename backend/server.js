@@ -4,6 +4,7 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 const passport = require('passport');
+const cors = require('cors');
 require('./config/passport.js')(passport);
 const bodyParser = require('body-parser');
 
@@ -23,14 +24,22 @@ db.once('open', () => {
 
 const PORT = process.env.PORT || 8080;
 const HOST = '0.0.0.0';
-
 const app = express();
 app.use(express.json());
 
-app.use(express.static(path.join(__dirname, 'ui')));
+app.use(
+  cors({
+    origin: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    exposedHeaders: ['x-auth-token'],
+  }),
+);
 
 // passport setup
-app.use(express.static('public'));
+app.use(express.static('static'));
+app.use(express.static(path.join(__dirname, 'ui', 'login')));
+app.use(express.static(path.join(__dirname, 'ui', 'app')));
 app.use(session({ secret: 'cats' }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(passport.initialize());
@@ -43,19 +52,20 @@ mongoose.connect(process.env.DATABASE_URL, {
 
 const eventsRouter = require('./routes/events');
 
+app.get('/api/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'ui', 'login', 'index.html'));
+});
+
 app.get('/api/user', (req, res) => {
   res.send(req.user);
 });
 
 // route for logging out
 app.get('/api/logout', (req, res) => {
-  console.info('Logged out bye bye');
   req.logout();
-  res.send({ redirectUrl: '/login' });
+  res.redirect('/api/login');
+  console.info('Logged out bye bye');
 });
-
-// facebook routes
-// twitter routes
 
 // =====================================
 // MOCK ROUTES =======================
@@ -63,8 +73,8 @@ app.get('/api/logout', (req, res) => {
 app.get(
   '/api/auth/mock',
   passport.authenticate('mock', {
-    successRedirect: '/api/user',
-    // failureRedirect: '/login',
+    successRedirect: '/app',
+    failureRedirect: '/api/login',
     failureFlash: 'Invalid mock credentials.',
   }),
 );
@@ -77,20 +87,43 @@ app.get(
 // email gets their emails
 app.get('/api/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-// the callback after google has authenticated the user
+// e callback after google has authenticated the user
 app.get(
-  '/api/auth/google/callback',
+  '/auth/google/callback',
   passport.authenticate('google', {
-    successRedirect: '/api/user',
-    failureRedirect: '/',
+    successRedirect: '/app',
+    failureRedirect: '/api/login',
     failureFlash: 'Invalid Google credentials.',
+  }),
+);
+
+// Twitter Routes
+app.get('/api/auth/twitter', passport.authenticate('twitter'));
+app.get(
+  '/auth/twitter/callback',
+  passport.authenticate('twitter', {
+    successRedirect: '/app',
+    failureRedirect: '/api/login',
+    failureFlash: 'twitter credentials invalid',
+  }),
+);
+
+// Facebook Routes
+app.get('/api/auth/facebook', passport.authenticate('facebook', { scope: ['email'] }));
+app.get(
+  '/auth/facebook/callback',
+  passport.authenticate('facebook', {
+    successRedirect: '/app',
+    failureRedirect: '/api/login',
+    failureFlash: 'facebook credentials invalid',
   }),
 );
 
 app.use('/api/events', isLoggedIn, eventsRouter);
 
-app.get('/*', isLoggedIn, (req, res) => {
-  res.sendFile(path.join(__dirname, 'ui', 'index.html'));
+app.get('/app', isLoggedIn, (req, res) => {
+  console.info('serve app');
+  res.sendFile(path.join(__dirname, 'ui', 'app', 'index.html'));
 });
 
 app.listen(PORT, HOST);

@@ -4,7 +4,7 @@ import { CssBaseline } from "@material-ui/core";
 import theme from "./themes/theme";
 import axios from "axios";
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Redirect,
   Route,
   Switch
@@ -12,7 +12,6 @@ import {
 import Calendar from "./components/Calendar/Calendar";
 import EventDetail from "./components/EventDetail/EventDetail";
 import ErrorDisplayer from "./components/ErrorDisplayer/ErrorDisplayer";
-import Login from "./components/Login/Login";
 import { AuthContext } from "./contexts/AuthContext";
 import FullPageCircularSpinner from "./components/FullPageCircualSpinner/FullPageCircularSpinner";
 
@@ -31,7 +30,12 @@ function App() {
         const response = await axios.get("/api/user");
         const user = response.data;
         if (user.token) {
-          setUser({ email: user.email, name: user.name, isLoggedIn: true });
+          setUser({
+            email: user.email,
+            name: user.name,
+            avatar: user.avatar,
+            isLoggedIn: true
+          });
         }
       } catch (err) {
         console.error(err);
@@ -54,7 +58,7 @@ function App() {
           ) : (
             <Redirect
               to={{
-                pathname: "/login",
+                pathname: "/api/login",
                 state: { from: location }
               }}
             />
@@ -82,16 +86,12 @@ function App() {
                   }}
                 />
               </Route>
-              <Route path="/login" exact>
-                {!user.isLoggedIn ? (
-                  <Login />
-                ) : (
-                  <Redirect
-                    to={{
-                      pathname: "/calendar"
-                    }}
-                  />
-                )}
+              <Route path="/_=_" exact>
+                <Redirect
+                  to={{
+                    pathname: "/calendar"
+                  }}
+                />
               </Route>
               <PrivateRoute path="/calendar" exact>
                 <Calendar />

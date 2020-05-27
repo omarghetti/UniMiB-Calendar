@@ -60,7 +60,7 @@ function EventDetail() {
         const response = await axios.get(`/api/events/${eventId}`);
         setEvent(response.data);
       } catch (e) {
-        history.push(`/error/${e.response.status}`);
+        history.push(`/error/${e.response.status || "404"}`);
       } finally {
         setFetchingCompleted();
       }

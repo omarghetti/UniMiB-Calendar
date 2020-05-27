@@ -5,13 +5,14 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import Container from "@material-ui/core/Container";
 import { Swipeable } from "react-swipeable";
 import axios from "axios";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { typeMapper } from "../../utils/eventUtils";
 import * as R from "ramda";
 import { AuthContext } from "../../contexts/AuthContext";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import TopBar from "../TopBar/TopBar";
 
 const useStyles = makeStyles(theme => ({
   fab: {
@@ -27,7 +28,6 @@ const useStyles = makeStyles(theme => ({
 
 function Calendar() {
   const classes = useStyles();
-  let location = useLocation();
   let history = useHistory();
 
   const calendarComponentRef = useRef(null);
@@ -71,7 +71,7 @@ function Calendar() {
   }
 
   function handleEventClick({ event }) {
-    history.push(`${location.pathname}/${event.extendedProps._id}`);
+    history.push(`calendar/${event.extendedProps._id}`);
   }
 
   function renderEvent(info) {
@@ -84,6 +84,7 @@ function Calendar() {
 
   return (
     <div>
+      <TopBar />
       <Swipeable
         onSwipedRight={previous}
         onSwipedLeft={next}

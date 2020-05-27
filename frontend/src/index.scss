@@ -74,6 +74,10 @@ $duration: 1.4s;
   }
 }
 
+.login-button {
+  margin-right: 7px;
+}
+
 .login-button + .spinner-wrapper {
   visibility: hidden;
 }

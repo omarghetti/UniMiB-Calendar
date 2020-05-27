@@ -87,6 +87,7 @@ function EventDetail() {
             color="primary"
             aria-label="back"
             onClick={handleBackClick}
+            data-test-id="event-detail-btn-back"
           >
             <ArrowBack fontSize="large" />
           </IconButton>
@@ -125,6 +126,7 @@ function EventDetail() {
                 <EventIcon />
               </ListItemAvatar>
               <ListItemText
+                data-test-id="event-detail-type-value"
                 primary="Tipo"
                 secondary={renderWhenReady(
                   !isFetching,
@@ -138,6 +140,7 @@ function EventDetail() {
                 <PeopleIcon />
               </ListItemAvatar>
               <ListItemText
+                data-test-id="event-detail-participants-value"
                 primary="Partecipanti"
                 secondary={renderWhenReady(
                   !isFetching,

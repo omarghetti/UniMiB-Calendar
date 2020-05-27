@@ -14,7 +14,21 @@ describe("Calendar view", () => {
     cy.get("@todayEvent").contains("Test event");
   });
 
-  it("Should display event detail when clicking on it", () => {
+  it("Should display event detail when clicking on it and bring the user back to calendar view when the back button is clicked", () => {
     cy.get(".fc-event").click();
+
+    // type
+    cy.get('[data-test-id="event-detail-type-value"]').as("eventType");
+    cy.get("@eventType").contains("Chiarimenti lezione");
+
+    // participants
+    cy.get('[data-test-id="event-detail-participants-value"]').as(
+      "eventParticipants"
+    );
+    cy.get("@eventParticipants").contains("fake-email");
+
+    // back
+    cy.get('[data-test-id="event-detail-btn-back"]').click();
+    cy.get(".fc").should("exist");
   });
 });

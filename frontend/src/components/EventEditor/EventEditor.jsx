@@ -57,6 +57,7 @@ function EventEditor() {
   const [newEvent, setNewEvent] = useState({});
   const [isFetching, setIsFetching] = useState(true);
   const [eventTypes, setEventTypes] = useState([]);
+  const [userEmails, setUserEmails] = useState([]);
   const [startDate, setStartDate] = useState(moment());
   const [personName, setPersonName] = React.useState([]);
 
@@ -67,18 +68,28 @@ function EventEditor() {
   }, []);
 
   useEffect(() => {
-    async function fetchEvent() {
+    async function fetchEventTypes() {
       try {
         const response = await axios.get("/api/events/types");
         setEventTypes(response.data);
       } catch (e) {
         history.push(`/error/${e.response.status}`);
       } finally {
-        setFetchingCompleted();
       }
     }
 
-    fetchEvent();
+    async function fetchUserEmails() {
+      try {
+        const response = await axios.get("/api/users/emails");
+        setUserEmails(response.data);
+      } catch (e) {
+        history.push(`/error/${e.response.status}`);
+      }
+    }
+
+    fetchEventTypes();
+    fetchUserEmails();
+    setFetchingCompleted();
   }, [history, setFetchingCompleted]);
 
   function renderHeader() {
@@ -158,9 +169,9 @@ function EventEditor() {
             )}
             MenuProps={MenuProps}
           >
-            {eventTypes.map(name => (
-              <MenuItem key={name} value={name}>
-                {name}
+            {userEmails.map(email => (
+              <MenuItem key={email} value={email}>
+                {email}
               </MenuItem>
             ))}
           </Select>

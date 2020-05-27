@@ -1,18 +1,17 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import Container from "@material-ui/core/Container";
-import { Swipeable } from "react-swipeable";
-import axios from "axios";
-import { useHistory } from "react-router-dom";
-import { typeMapper } from "../../utils/eventUtils";
-import * as R from "ramda";
-import { AuthContext } from "../../contexts/AuthContext";
-import Fab from "@material-ui/core/Fab";
-import AddIcon from "@material-ui/icons/Add";
-import makeStyles from "@material-ui/core/styles/makeStyles";
-import TopBar from "../TopBar/TopBar";
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import Container from '@material-ui/core/Container';
+import { Swipeable } from 'react-swipeable';
+import axios from 'axios';
+import { useHistory } from 'react-router-dom';
+import { typeMapper } from '../../utils/eventUtils';
+import * as R from 'ramda';
+import { AuthContext } from '../../contexts/AuthContext';
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 
 const useStyles = makeStyles(theme => ({
   fab: {
@@ -84,7 +83,6 @@ function Calendar() {
 
   return (
     <div>
-      <TopBar />
       <Swipeable
         onSwipedRight={previous}
         onSwipedLeft={next}

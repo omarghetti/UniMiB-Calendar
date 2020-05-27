@@ -15,6 +15,7 @@ import { AuthContext } from "./contexts/AuthContext";
 import FullPageCircularSpinner from "./components/FullPageCircualSpinner/FullPageCircularSpinner";
 import axios from "axios";
 import EventEditor from "./components/EventEditor/EventEditor";
+import TopBar from './components/TopBar/TopBar';
 
 function App() {
   const [user, setUser] = useState({
@@ -79,6 +80,7 @@ function App() {
       <div className="App">
         <AuthContext.Provider value={{ user, setUser }}>
           <Router>
+            <TopBar />
             <Switch>
               <Route path="/" exact>
                 <Redirect

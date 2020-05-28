@@ -8,7 +8,6 @@ import { useHistory } from "react-router-dom";
 import NativeSelect from "@material-ui/core/NativeSelect";
 import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
-import moment from "moment";
 import Select from "@material-ui/core/Select";
 import Input from "@material-ui/core/Input";
 import Chip from "@material-ui/core/Chip";
@@ -54,24 +53,46 @@ const MenuProps = {
 
 function EventEditor() {
   const classes = useStyles();
-  const [newEvent, setNewEvent] = useState({});
+  const [newEvent, setNewEvent] = useState({
+    title: "Nuovo evento",
+    type: "",
+    allDay: false,
+    participants: [],
+    place: "",
+    notes: ""
+  });
   const [isFetching, setIsFetching] = useState(true);
   const [eventTypes, setEventTypes] = useState([]);
   const [userEmails, setUserEmails] = useState([]);
-  const [startDate, setStartDate] = useState(moment());
-  const [personName, setPersonName] = React.useState([]);
 
   const history = useHistory();
+
+  const handleChange = useCallback(
+    (field, value) => {
+      setNewEvent({
+        ...newEvent,
+        [field]: value
+      });
+    },
+    [newEvent]
+  );
 
   const setFetchingCompleted = useCallback(() => {
     setIsFetching(false);
   }, []);
 
   useEffect(() => {
+    if (eventTypes) {
+      handleChange("type", eventTypes[0]);
+    }
+  }, [eventTypes, handleChange]);
+
+  useEffect(() => {
     async function fetchEventTypes() {
       try {
         const response = await axios.get("/api/events/types");
-        setEventTypes(response.data);
+        const eventTypes = response.data;
+        setEventTypes(eventTypes);
       } catch (e) {
         history.push(`/error/${e.response.status}`);
       } finally {
@@ -95,17 +116,6 @@ function EventEditor() {
   function renderHeader() {
     return <div />;
   }
-
-  const handleChange = (field, value) => {
-    setNewEvent({
-      ...newEvent,
-      [field]: value
-    });
-  };
-
-  const handleParticipantsChange = event => {
-    setPersonName(event.target.value);
-  };
 
   function renderDetail() {
     return isFetching ? (
@@ -135,8 +145,8 @@ function EventEditor() {
           <DateTimePicker
             label="Inizio"
             inputVariant="standard"
-            value={startDate}
-            onChange={setStartDate}
+            value={newEvent.start}
+            onChange={value => handleChange("start", value.toISOString())}
           />
         </MuiPickersUtilsProvider>
         <br />
@@ -145,8 +155,8 @@ function EventEditor() {
           <DateTimePicker
             label="Fine"
             inputVariant="standard"
-            value={startDate}
-            onChange={setStartDate}
+            value={newEvent.end}
+            onChange={value => handleChange("end", value.toISOString())}
           />
         </MuiPickersUtilsProvider>
         <br />
@@ -157,8 +167,8 @@ function EventEditor() {
             labelId="demo-mutiple-chip-label"
             id="demo-mutiple-chip"
             multiple
-            value={personName}
-            onChange={handleParticipantsChange}
+            value={newEvent.participants}
+            onChange={event => handleChange("participants", event.target.value)}
             input={<Input id="select-multiple-chip" />}
             renderValue={selected => (
               <div className={classes.chips}>
@@ -180,7 +190,13 @@ function EventEditor() {
         <br />
 
         <FormControl className={classes.formControl}>
-          <TextField required id="standard-required" label="Luogo" />
+          <TextField
+            required
+            id="standard-required"
+            label="Luogo"
+            value={newEvent.place}
+            onChange={event => handleChange("place", event.target.value)}
+          />
         </FormControl>
         <br />
         <br />
@@ -191,6 +207,8 @@ function EventEditor() {
             label="Note"
             multiline
             rows={4}
+            value={newEvent.notes}
+            onChange={event => handleChange("notes", event.target.value)}
           />
         </FormControl>
         <br />

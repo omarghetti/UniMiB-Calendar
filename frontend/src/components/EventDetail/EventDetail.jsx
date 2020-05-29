@@ -4,7 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import EventIcon from "@material-ui/icons/Event";
+import LabelIcon from "@material-ui/icons/Label";
 import TimeIcon from "@material-ui/icons/AccessTime";
 import PeopleIcon from "@material-ui/icons/People";
 import PlaceIcon from "@material-ui/icons/Place";
@@ -122,7 +122,7 @@ function EventDetail() {
           <List className={classes.detail}>
             <ListItem>
               <ListItemAvatar>
-                <EventIcon />
+                <LabelIcon />
               </ListItemAvatar>
               <ListItemText
                 primary="Tipo"

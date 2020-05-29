@@ -1,11 +1,15 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { Fragment, useCallback, useEffect, useState } from "react";
 import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
-import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import {
+  DatePicker,
+  DateTimePicker,
+  MuiPickersUtilsProvider
+} from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
 import Select from "@material-ui/core/Select";
 import Input from "@material-ui/core/Input";
@@ -15,11 +19,17 @@ import TextField from "@material-ui/core/TextField";
 import SaveIcon from "@material-ui/icons/Save";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-import EventIcon from "@material-ui/icons/Event";
+import LabelIcon from "@material-ui/icons/Label";
 import TimeIcon from "@material-ui/icons/AccessTime";
 import PeopleIcon from "@material-ui/icons/People";
 import PlaceIcon from "@material-ui/icons/Place";
 import NotesIcon from "@material-ui/icons/Notes";
+import Box from "@material-ui/core/Box";
+import { typeMapper } from "../../utils/eventUtils";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
+import moment from "moment";
+import "moment/locale/it";
 
 const useStyles = makeStyles(theme => ({
   header: {
@@ -31,7 +41,14 @@ const useStyles = makeStyles(theme => ({
   },
   formControl: {
     margin: theme.spacing(1),
-    minWidth: 120
+    minWidth: 240
+  },
+  formControlTitle: {
+    margin: theme.spacing(2),
+    minWidth: 280,
+    "& div,label": {
+      fontSize: 24
+    }
   },
   selectEmpty: {
     marginTop: theme.spacing(2)
@@ -52,6 +69,9 @@ const useStyles = makeStyles(theme => ({
     alignSelf: "center",
     textAlign: "center",
     marginBottom: "32px"
+  },
+  checkboxField: {
+    marginTop: "16px"
   }
 }));
 
@@ -68,8 +88,9 @@ const MenuProps = {
 
 function EventEditor() {
   const classes = useStyles();
+  moment.locale("it");
   const [newEvent, setNewEvent] = useState({
-    title: "Nuovo evento",
+    title: "",
     type: "",
     allDay: false,
     participants: [],
@@ -118,8 +139,80 @@ function EventEditor() {
     setFetchingCompleted();
   }, [history, setFetchingCompleted]);
 
-  function renderHeader() {
-    return <div />;
+  function handleBackClick() {
+    history.push("/calendar");
+  }
+
+  function renderDateTimeSection() {
+    return (
+      <Fragment>
+        <Grid item sm={1} xs={1} className={classes.fieldIcon}>
+          <TimeIcon />
+        </Grid>
+        <Grid item sm={2} xs={11}>
+          <FormControlLabel
+            className={classes.checkboxField}
+            control={
+              <Checkbox
+                checked={newEvent.allDay}
+                onChange={event => handleChange("allDay", event.target.checked)}
+                name="allDay"
+                color="primary"
+              />
+            }
+            label="Tutto il giorno"
+          />
+        </Grid>
+        <Grid item sm={2} xs={12}>
+          <MuiPickersUtilsProvider
+            utils={MomentUtils}
+            libInstance={moment}
+            locale={"it"}
+          >
+            {newEvent.allDay ? (
+              <DatePicker
+                label="Inizio"
+                inputVariant="standard"
+                format="DD/MM/YYYY"
+                value={newEvent.start}
+                onChange={value => handleChange("start", value.toISOString())}
+              />
+            ) : (
+              <DateTimePicker
+                label="Inizio"
+                inputVariant="standard"
+                format="DD/MM/YYYY hh:mm:ss"
+                value={newEvent.start}
+                onChange={value => handleChange("start", value.toISOString())}
+              />
+            )}
+          </MuiPickersUtilsProvider>
+        </Grid>
+        <Grid item sm={7} xs={12}>
+          {newEvent.allDay ? (
+            <MuiPickersUtilsProvider utils={MomentUtils}>
+              <DatePicker
+                label="Fine"
+                inputVariant="standard"
+                format="DD/MM/YYYY"
+                value={newEvent.end}
+                onChange={value => handleChange("end", value.toISOString())}
+              />
+            </MuiPickersUtilsProvider>
+          ) : (
+            <MuiPickersUtilsProvider utils={MomentUtils}>
+              <DateTimePicker
+                label="Fine"
+                inputVariant="standard"
+                format="DD/MM/YYYY hh:mm:ss"
+                value={newEvent.end}
+                onChange={value => handleChange("end", value.toISOString())}
+              />
+            </MuiPickersUtilsProvider>
+          )}
+        </Grid>
+      </Fragment>
+    );
   }
 
   function renderDetail() {
@@ -127,9 +220,19 @@ function EventEditor() {
       <div />
     ) : (
       <div className={classes.detail}>
+        <Grid item xs={12}>
+          <FormControl className={classes.formControlTitle}>
+            <TextField
+              id="standard"
+              label="Titolo"
+              value={newEvent.title}
+              onChange={event => handleChange("title", event.target.value)}
+            />
+          </FormControl>
+        </Grid>
         <Grid container spacing={3}>
           <Grid item xs={1} className={classes.fieldIcon}>
-            <EventIcon />
+            <LabelIcon />
           </Grid>
           <Grid item xs={11}>
             <FormControl className={classes.formControl}>
@@ -142,35 +245,13 @@ function EventEditor() {
               >
                 {eventTypes.map(type => (
                   <MenuItem value={type} key={type}>
-                    {type}
+                    {typeMapper[type].label}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={1} className={classes.fieldIcon}>
-            <TimeIcon />
-          </Grid>
-          <Grid item xs={3}>
-            <MuiPickersUtilsProvider utils={MomentUtils}>
-              <DateTimePicker
-                label="Inizio"
-                inputVariant="standard"
-                value={newEvent.start}
-                onChange={value => handleChange("start", value.toISOString())}
-              />
-            </MuiPickersUtilsProvider>
-          </Grid>
-          <Grid item xs={8}>
-            <MuiPickersUtilsProvider utils={MomentUtils}>
-              <DateTimePicker
-                label="Fine"
-                inputVariant="standard"
-                value={newEvent.end}
-                onChange={value => handleChange("end", value.toISOString())}
-              />
-            </MuiPickersUtilsProvider>
-          </Grid>
+          {renderDateTimeSection()}
           <Grid item xs={1} className={classes.fieldIcon}>
             <PeopleIcon />
           </Grid>
@@ -213,8 +294,7 @@ function EventEditor() {
           <Grid item xs={11}>
             <FormControl className={classes.formControl}>
               <TextField
-                required
-                id="standard-required"
+                id="standard"
                 label="Luogo"
                 value={newEvent.place}
                 onChange={event => handleChange("place", event.target.value)}
@@ -236,42 +316,37 @@ function EventEditor() {
               />
             </FormControl>
           </Grid>
-          <FormControl>
-            <Grid container spacing={3}>
-              <Grid item xs={6}>
-                <Button
-                  variant="outlined"
-                  size="large"
-                  color="secondary"
-                  className={classes.button}
-                >
-                  Annulla
-                </Button>
-              </Grid>
-              <Grid item xs={6}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  size="large"
-                  className={classes.button}
-                  startIcon={<SaveIcon />}
-                >
-                  Salva
-                </Button>
-              </Grid>
-            </Grid>
-          </FormControl>
         </Grid>
+
+        <Box display="flex" justifyContent="flex-end" m={1} p={1}>
+          <Box p={1}>
+            <Button
+              variant="outlined"
+              size="large"
+              color="secondary"
+              className={classes.button}
+              onClick={handleBackClick}
+            >
+              Annulla
+            </Button>
+          </Box>
+          <Box p={1}>
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              className={classes.button}
+              startIcon={<SaveIcon />}
+            >
+              Salva
+            </Button>
+          </Box>
+        </Box>
       </div>
     );
   }
 
-  return (
-    <Container>
-      {renderHeader()}
-      {renderDetail()}
-    </Container>
-  );
+  return <Container>{renderDetail()}</Container>;
 }
 
 export default EventEditor;

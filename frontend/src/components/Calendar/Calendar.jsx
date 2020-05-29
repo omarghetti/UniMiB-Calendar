@@ -116,7 +116,7 @@ function Calendar() {
               list: "Lista"
             }}
             header={{
-              left: "dayGridMonth,timeGridWeek,timeGridDay",
+              left: "dayGridMonth,timeGridWeek,timeGridDay, today",
               center: "title",
               right: "prev,next"
             }}

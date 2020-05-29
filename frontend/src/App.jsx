@@ -45,29 +45,6 @@ function App() {
     checkAuth().then(() => setIsReady(true));
   }, []);
 
-  function PrivateRoute({ children, ...rest }) {
-    const { user } = React.useContext(AuthContext);
-
-    console.info("context user is ", user);
-    return (
-      <Route
-        {...rest}
-        render={({ location }) =>
-          user.isLoggedIn ? (
-            children
-          ) : (
-            <Redirect
-              to={{
-                pathname: "/api/login",
-                state: { from: location }
-              }}
-            />
-          )
-        }
-      />
-    );
-  }
-
   return !isReady ? (
     <ThemeProvider theme={theme}>
       <FullPageCircularSpinner />
@@ -93,9 +70,9 @@ function App() {
                   }}
                 />
               </Route>
-              <PrivateRoute path="/calendar" exact>
+              <Route path="/calendar" exact>
                 <Calendar />
-              </PrivateRoute>
+              </Route>
               <Route path="/calendar/:eventId">
                 <EventDetail />
               </Route>

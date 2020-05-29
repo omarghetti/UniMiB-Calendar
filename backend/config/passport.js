@@ -99,10 +99,7 @@ module.exports = function(passport) {
         // User.findOne won't fire until we have all our data back from Google
         process.nextTick(function() {
           // try to find the user based on their google id
-          User.findOne({ email: profile.emails[0].value }, function(
-            err,
-            user,
-          ) {
+          User.findOne({ email: profile.emails[0].value }, function(err, user) {
             if (err) return done(err);
 
             if (user) {
@@ -150,10 +147,7 @@ module.exports = function(passport) {
       },
       function(token, tokenSecret, profile, done) {
         process.nextTick(function() {
-          User.findOne({ email: profile.emails[0].value }, function(
-            err,
-            user,
-          ) {
+          User.findOne({ email: profile.emails[0].value }, function(err, user) {
             if (err) {
               return done(err);
             }
@@ -198,10 +192,7 @@ module.exports = function(passport) {
       },
       function(accessToken, refreshToken, profile, done) {
         process.nextTick(function() {
-          User.findOne({ email: profile.emails[0].value }, function(
-            err,
-            user,
-          ) {
+          User.findOne({ email: profile.emails[0].value }, function(err, user) {
             if (err) {
               return done(err);
             }

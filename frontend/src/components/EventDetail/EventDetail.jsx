@@ -9,7 +9,6 @@ import TimeIcon from "@material-ui/icons/AccessTime";
 import PeopleIcon from "@material-ui/icons/People";
 import PlaceIcon from "@material-ui/icons/Place";
 import NotesIcon from "@material-ui/icons/Notes";
-import AttachmentIcon from "@material-ui/icons/AttachFile";
 import ListItemText from "@material-ui/core/ListItemText";
 import { useHistory, useParams } from "react-router-dom";
 import axios from "axios";
@@ -161,22 +160,6 @@ function EventDetail() {
                   getFormattedPropertyValue(
                     event.attachments,
                     "Nessun luogo specificato"
-                  )
-                )}
-              />
-            </ListItem>
-            <ListItem>
-              <ListItemAvatar>
-                <AttachmentIcon />
-              </ListItemAvatar>
-              <ListItemText
-                primary="Allegati"
-                secondary={renderWhenReady(
-                  !isFetching,
-                  <Skeleton variant="text" width={270} />,
-                  getFormattedPropertyValues(
-                    event.attachments,
-                    "Nessun allegato"
                   )
                 )}
               />

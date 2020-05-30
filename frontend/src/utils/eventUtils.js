@@ -20,7 +20,15 @@ export const typeMapper = {
 };
 
 function formatDateInterval(date, format) {
+  console.info("moee", moment(date).locale("it"));
+  console.info(
+    "fff",
+    moment(date)
+      .locale("it")
+      .format(format)
+  );
   return moment(date)
+    .utc()
     .locale("it")
     .format(format);
 }

@@ -14,7 +14,7 @@ describe("eventUtils", () => {
       };
 
       expect(getFormattedTimeInterval(event)).toEqual(
-        "20 aprile 2020, 12:00 - 21 aprile 2020, 13:00"
+        "20 aprile 2020, 10:00 - 21 aprile 2020, 11:00"
       );
     });
 

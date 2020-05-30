@@ -140,6 +140,7 @@ function Calendar() {
             ref={calendarComponentRef}
           />
           <Fab
+            data-test-id="calendar-btn-new-event"
             color="primary"
             aria-label="add"
             className={classes.fab}

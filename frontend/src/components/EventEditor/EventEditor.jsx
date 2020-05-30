@@ -272,6 +272,9 @@ function EventEditor() {
           <Grid item xs={12}>
             <FormControl className={classes.formControlTitle}>
               <TextField
+                inputProps={{
+                  "data-test-id": "event-editor-title-field"
+                }}
                 id="standard"
                 label="Titolo"
                 required
@@ -318,7 +321,14 @@ function EventEditor() {
                   onChange={event =>
                     handleChange("participants", event.target.value)
                   }
-                  input={<Input id="select-multiple-chip" />}
+                  input={
+                    <Input
+                      id="select-multiple-chip"
+                      inputProps={{
+                        "data-test-id": "event-editor-participants-field"
+                      }}
+                    />
+                  }
                   renderValue={selected => (
                     <div className={classes.chips}>
                       {selected.map(value => (
@@ -347,6 +357,9 @@ function EventEditor() {
               <FormControl className={classes.formControl}>
                 <TextField
                   id="standard"
+                  inputProps={{
+                    "data-test-id": "event-editor-place-field"
+                  }}
                   label="Luogo"
                   value={newEvent.place}
                   onChange={event => handleChange("place", event.target.value)}
@@ -360,6 +373,9 @@ function EventEditor() {
               <FormControl className={classes.formControl}>
                 <TextField
                   id="standard-multiline-static"
+                  inputProps={{
+                    "data-test-id": "event-editor-notes-field"
+                  }}
                   label="Note"
                   multiline
                   rows={4}
@@ -384,6 +400,7 @@ function EventEditor() {
             </Box>
             <Box p={1}>
               <Button
+                data-test-id="event-editor-btn-save"
                 variant="contained"
                 color="primary"
                 size="large"

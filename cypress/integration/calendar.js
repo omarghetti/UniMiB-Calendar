@@ -1,5 +1,6 @@
 describe("Calendar view", () => {
   it("Should have correct URL", () => {
+    cy.visit("http://localhost:8080/app");
     cy.url().should("include", "/calendar");
   });
 

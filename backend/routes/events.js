@@ -7,7 +7,7 @@ const Event = require('../models/event');
 router.get('/', async (req, res) => {
   try {
     const events = await Event.find({ participants: req.user.email }).select(
-      '_id title start end allDay type',
+      '_id title start end allDay type participants place notes',
     );
     res.json(events);
   } catch (err) {

@@ -1,4 +1,10 @@
-import React, { Fragment, useCallback, useEffect, useState } from "react";
+import React, {
+  Fragment,
+  useCallback,
+  useContext,
+  useEffect,
+  useState
+} from "react";
 import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
 import FormControl from "@material-ui/core/FormControl";
@@ -30,6 +36,10 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import moment from "moment";
 import "moment/locale/it";
+import * as R from "ramda";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import { MessageContext } from "../../contexts/MessageContext";
 
 const useStyles = makeStyles(theme => ({
   header: {
@@ -46,7 +56,10 @@ const useStyles = makeStyles(theme => ({
   formControlTitle: {
     margin: theme.spacing(2),
     minWidth: 280,
-    "& div,label": {
+    "& div": {
+      fontSize: 24
+    },
+    "& label": {
       fontSize: 24
     }
   },
@@ -91,14 +104,19 @@ function EventEditor() {
   moment.locale("it");
   const [newEvent, setNewEvent] = useState({
     title: "",
-    type: "",
     allDay: false,
     participants: [],
+    start: moment(),
+    end: moment().add(1, "hours"),
     place: ""
   });
   const [isFetching, setIsFetching] = useState(true);
   const [eventTypes, setEventTypes] = useState([]);
   const [userEmails, setUserEmails] = useState([]);
+  const [saveRequested, setSaveRequested] = useState(false);
+  const [defaultEventType, setDefaultEventType] = useState("");
+
+  const { setMessage } = useContext(MessageContext);
 
   const history = useHistory();
 
@@ -112,6 +130,36 @@ function EventEditor() {
   const setFetchingCompleted = useCallback(() => {
     setIsFetching(false);
   }, []);
+
+  useEffect(() => {
+    async function saveEvent() {
+      try {
+        await axios.post("/api/events", {
+          ...newEvent
+        });
+        setMessage({ open: true, text: "Evento salvato", severity: "success" });
+        history.push(`/calendar`);
+      } catch (e) {
+        setMessage({
+          open: true,
+          text: `Errore durante il salvataggio dell'evento`,
+          severity: "error"
+        });
+        history.push(`/error/${e.response.status}`);
+      } finally {
+      }
+    }
+
+    if (saveRequested) {
+      saveEvent();
+    }
+  }, [history, newEvent, saveRequested, setMessage]);
+
+  useEffect(() => {
+    if (eventTypes.length) {
+      setDefaultEventType(eventTypes[0]);
+    }
+  }, [eventTypes, setDefaultEventType]);
 
   useEffect(() => {
     async function fetchEventTypes() {
@@ -219,130 +267,137 @@ function EventEditor() {
     return isFetching ? (
       <div />
     ) : (
-      <div className={classes.detail}>
-        <Grid item xs={12}>
-          <FormControl className={classes.formControlTitle}>
-            <TextField
-              id="standard"
-              label="Titolo"
-              value={newEvent.title}
-              onChange={event => handleChange("title", event.target.value)}
-            />
-          </FormControl>
-        </Grid>
-        <Grid container spacing={3}>
-          <Grid item xs={1} className={classes.fieldIcon}>
-            <LabelIcon />
-          </Grid>
-          <Grid item xs={11}>
-            <FormControl className={classes.formControl}>
-              <InputLabel id="demo-simple-select-label">Tipo</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={newEvent.type}
-                onChange={event => handleChange("type", event.target.value)}
-              >
-                {eventTypes.map(type => (
-                  <MenuItem value={type} key={type}>
-                    {typeMapper[type].label}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-          {renderDateTimeSection()}
-          <Grid item xs={1} className={classes.fieldIcon}>
-            <PeopleIcon />
-          </Grid>
-          <Grid item xs={11}>
-            <FormControl className={classes.formControl}>
-              <InputLabel id="demo-mutiple-chip-label">Partecipanti</InputLabel>
-              <Select
-                labelId="demo-mutiple-chip-label"
-                id="demo-mutiple-chip"
-                multiple
-                value={newEvent.participants}
-                onChange={event =>
-                  handleChange("participants", event.target.value)
-                }
-                input={<Input id="select-multiple-chip" />}
-                renderValue={selected => (
-                  <div className={classes.chips}>
-                    {selected.map(value => (
-                      <Chip
-                        key={value}
-                        label={value}
-                        className={classes.chip}
-                      />
-                    ))}
-                  </div>
-                )}
-                MenuProps={MenuProps}
-              >
-                {userEmails.map(email => (
-                  <MenuItem key={email} value={email}>
-                    {email}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={1} className={classes.fieldIcon}>
-            <PlaceIcon />
-          </Grid>
-          <Grid item xs={11}>
-            <FormControl className={classes.formControl}>
+      <Card className={classes.detail}>
+        <CardContent>
+          <Grid item xs={12}>
+            <FormControl className={classes.formControlTitle}>
               <TextField
                 id="standard"
-                label="Luogo"
-                value={newEvent.place}
-                onChange={event => handleChange("place", event.target.value)}
+                label="Titolo"
+                required
+                value={newEvent.title}
+                onChange={event => handleChange("title", event.target.value)}
               />
             </FormControl>
           </Grid>
-          <Grid item xs={1} className={classes.longTextFieldIcon}>
-            <NotesIcon />
+          <Grid container spacing={3}>
+            <Grid item xs={1} className={classes.fieldIcon}>
+              <LabelIcon />
+            </Grid>
+            <Grid item xs={11}>
+              <FormControl className={classes.formControl}>
+                <InputLabel id="demo-simple-select-label">Tipo</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={R.defaultTo(defaultEventType)(newEvent.type)}
+                  onChange={event => handleChange("type", event.target.value)}
+                >
+                  {eventTypes.map(type => (
+                    <MenuItem value={type} key={type}>
+                      {typeMapper[type].label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            {renderDateTimeSection()}
+            <Grid item xs={1} className={classes.fieldIcon}>
+              <PeopleIcon />
+            </Grid>
+            <Grid item xs={11}>
+              <FormControl className={classes.formControl}>
+                <InputLabel id="demo-mutiple-chip-label">
+                  Partecipanti
+                </InputLabel>
+                <Select
+                  labelId="demo-mutiple-chip-label"
+                  id="demo-mutiple-chip"
+                  multiple
+                  value={newEvent.participants}
+                  onChange={event =>
+                    handleChange("participants", event.target.value)
+                  }
+                  input={<Input id="select-multiple-chip" />}
+                  renderValue={selected => (
+                    <div className={classes.chips}>
+                      {selected.map(value => (
+                        <Chip
+                          key={value}
+                          label={value}
+                          className={classes.chip}
+                        />
+                      ))}
+                    </div>
+                  )}
+                  MenuProps={MenuProps}
+                >
+                  {userEmails.map(email => (
+                    <MenuItem key={email} value={email}>
+                      {email}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={1} className={classes.fieldIcon}>
+              <PlaceIcon />
+            </Grid>
+            <Grid item xs={11}>
+              <FormControl className={classes.formControl}>
+                <TextField
+                  id="standard"
+                  label="Luogo"
+                  value={newEvent.place}
+                  onChange={event => handleChange("place", event.target.value)}
+                />
+              </FormControl>
+            </Grid>
+            <Grid item xs={1} className={classes.longTextFieldIcon}>
+              <NotesIcon />
+            </Grid>
+            <Grid item xs={11}>
+              <FormControl className={classes.formControl}>
+                <TextField
+                  id="standard-multiline-static"
+                  label="Note"
+                  multiline
+                  rows={4}
+                  value={newEvent.notes}
+                  onChange={event => handleChange("notes", event.target.value)}
+                />
+              </FormControl>
+            </Grid>
           </Grid>
-          <Grid item xs={11}>
-            <FormControl className={classes.formControl}>
-              <TextField
-                id="standard-multiline-static"
-                label="Note"
-                multiline
-                rows={4}
-                value={newEvent.notes}
-                onChange={event => handleChange("notes", event.target.value)}
-              />
-            </FormControl>
-          </Grid>
-        </Grid>
 
-        <Box display="flex" justifyContent="flex-end" m={1} p={1}>
-          <Box p={1}>
-            <Button
-              variant="outlined"
-              size="large"
-              color="secondary"
-              className={classes.button}
-              onClick={handleBackClick}
-            >
-              Annulla
-            </Button>
+          <Box display="flex" justifyContent="flex-end" m={1} p={1}>
+            <Box p={1}>
+              <Button
+                variant="outlined"
+                size="large"
+                color="primary"
+                className={classes.button}
+                onClick={handleBackClick}
+              >
+                Annulla
+              </Button>
+            </Box>
+            <Box p={1}>
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                className={classes.button}
+                startIcon={<SaveIcon />}
+                onClick={() => setSaveRequested(true)}
+                disabled={!newEvent.title}
+              >
+                Salva
+              </Button>
+            </Box>
           </Box>
-          <Box p={1}>
-            <Button
-              variant="contained"
-              color="primary"
-              size="large"
-              className={classes.button}
-              startIcon={<SaveIcon />}
-            >
-              Salva
-            </Button>
-          </Box>
-        </Box>
-      </div>
+        </CardContent>
+      </Card>
     );
   }
 

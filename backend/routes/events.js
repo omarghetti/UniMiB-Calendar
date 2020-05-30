@@ -53,6 +53,11 @@ router.post('/', async (req, res) => {
     ...req.body,
   });
 
+  // add event creator to participants if not already present
+  if (!event.participants.includes(req.user.email)) {
+    event.participants.push(req.user.email);
+  }
+
   try {
     const newEvent = await event.save();
     res.status(201).json(newEvent);

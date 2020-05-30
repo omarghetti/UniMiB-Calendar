@@ -15,13 +15,21 @@ import { AuthContext } from "./contexts/AuthContext";
 import FullPageCircularSpinner from "./components/FullPageCircualSpinner/FullPageCircularSpinner";
 import axios from "axios";
 import EventEditor from "./components/EventEditor/EventEditor";
-import TopBar from './components/TopBar/TopBar';
+import TopBar from "./components/TopBar/TopBar";
+import MessageSnackbar from "./components/MessageSnackbar/MessageSnackbar";
+import { MessageContext } from "./contexts/MessageContext";
 
 function App() {
   const [user, setUser] = useState({
     isAuthenticated: false,
     name: "",
     avatar: ""
+  });
+
+  const [message, setMessage] = useState({
+    open: false,
+    text: "",
+    severity: "info"
   });
 
   const [isReady, setIsReady] = useState(false);
@@ -47,29 +55,6 @@ function App() {
     checkAuth().then(() => setIsReady(true));
   }, []);
 
-  function PrivateRoute({ children, ...rest }) {
-    const { user } = React.useContext(AuthContext);
-
-    console.info("context user is ", user);
-    return (
-      <Route
-        {...rest}
-        render={({ location }) =>
-          user.isLoggedIn ? (
-            children
-          ) : (
-            <Redirect
-              to={{
-                pathname: "/api/login",
-                state: { from: location }
-              }}
-            />
-          )
-        }
-      />
-    );
-  }
-
   return !isReady ? (
     <ThemeProvider theme={theme}>
       <FullPageCircularSpinner />
@@ -79,37 +64,45 @@ function App() {
       <CssBaseline />
       <div className="App">
         <AuthContext.Provider value={{ user, setUser }}>
-          <Router>
-            <TopBar />
-            <Switch>
-              <Route path="/" exact>
-                <Redirect
-                  to={{
-                    pathname: "/calendar"
-                  }}
-                />
-              </Route>
-              <Route path="/_=_" exact>
-                <Redirect
-                  to={{
-                    pathname: "/calendar"
-                  }}
-                />
-              </Route>
-              <PrivateRoute path="/calendar" exact>
-                <Calendar />
-              </PrivateRoute>
-              <Route path="/calendar/:eventId">
-                <EventDetail />
-              </Route>
-              <Route path="/new" exact>
-                <EventEditor />
-              </Route>
-              <Route path="/error/:errorCode" exact>
-                <ErrorDisplayer />
-              </Route>
-            </Switch>
-          </Router>
+          <MessageContext.Provider value={{ message, setMessage }}>
+            <Router>
+              <TopBar />
+              <MessageSnackbar
+                open={message.open}
+                message={message.text}
+                severity={message.severity}
+                handleClose={() => setMessage({ open: false, text: "" })}
+              />
+              <Switch>
+                <Route path="/" exact>
+                  <Redirect
+                    to={{
+                      pathname: "/calendar"
+                    }}
+                  />
+                </Route>
+                <Route path="/_=_" exact>
+                  <Redirect
+                    to={{
+                      pathname: "/calendar"
+                    }}
+                  />
+                </Route>
+                <Route path="/calendar" exact>
+                  <Calendar />
+                </Route>
+                <Route path="/calendar/:eventId">
+                  <EventDetail />
+                </Route>
+                <Route path="/new" exact>
+                  <EventEditor />
+                </Route>
+                <Route path="/error/:errorCode" exact>
+                  <ErrorDisplayer />
+                </Route>
+              </Switch>
+            </Router>
+          </MessageContext.Provider>
         </AuthContext.Provider>
       </div>
     </ThemeProvider>

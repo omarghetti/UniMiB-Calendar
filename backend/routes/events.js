@@ -68,4 +68,16 @@ router.post('/', async (req, res) => {
   }
 });
 
+// Delete all events
+router.delete('/', async (req, res) => {
+  try {
+    const result = await Event.deleteMany({});
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+});
+
 module.exports = router;

@@ -7,10 +7,9 @@ function isLoggedIn(req, res, next) {
     console.info('Ok pass through', req.isAuthenticated());
     return next();
   }
-
   // if they aren't redirect them to the home page
   console.info('You cannot pass');
-  return res.redirect('/login');
+  return res.redirect('/api/login');
 }
 
 module.exports = {

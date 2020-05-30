@@ -1,17 +1,17 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import FullCalendar from '@fullcalendar/react';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import Container from '@material-ui/core/Container';
-import { Swipeable } from 'react-swipeable';
-import axios from 'axios';
-import { useHistory } from 'react-router-dom';
-import { typeMapper } from '../../utils/eventUtils';
-import * as R from 'ramda';
-import { AuthContext } from '../../contexts/AuthContext';
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
-import makeStyles from '@material-ui/core/styles/makeStyles';
+import React, { useContext, useEffect, useRef, useState } from "react";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import Container from "@material-ui/core/Container";
+import { Swipeable } from "react-swipeable";
+import axios from "axios";
+import { useHistory } from "react-router-dom";
+import { typeMapper } from "../../utils/eventUtils";
+import * as R from "ramda";
+import { AuthContext } from "../../contexts/AuthContext";
+import Fab from "@material-ui/core/Fab";
+import AddIcon from "@material-ui/icons/Add";
+import makeStyles from "@material-ui/core/styles/makeStyles";
 
 const useStyles = makeStyles(theme => ({
   fab: {
@@ -128,7 +128,7 @@ function Calendar() {
               list: "Lista"
             }}
             header={{
-              left: "dayGridMonth,timeGridWeek,timeGridDay",
+              left: "dayGridMonth,timeGridWeek,timeGridDay, today",
               center: "title",
               right: "prev,next"
             }}

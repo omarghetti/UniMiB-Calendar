@@ -8,6 +8,7 @@ import React, {
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
+import googleCalendarPlugin from "@fullcalendar/google-calendar";
 import Container from "@material-ui/core/Container";
 import { Swipeable } from "react-swipeable";
 import axios from "axios";
@@ -79,7 +80,8 @@ function Calendar() {
         <Container className={"calendar-container"}>
           <FullCalendar
             defaultView="dayGridMonth"
-            plugins={[dayGridPlugin, timeGridPlugin]}
+            plugins={[dayGridPlugin, timeGridPlugin, googleCalendarPlugin]}
+            googleCalendarApiKey="AIzaSyDVp9kSCW2C2nLDhm8Wwn9ypggT0YO8tBk"
             locale="it"
             weekends={false}
             height="parent"
@@ -105,7 +107,10 @@ function Calendar() {
                 }
               }
             }}
-            events={events}
+            events={{
+              events,
+              googleCalendarId: user.email
+            }}
             eventRender={renderEvent}
             eventClick={handleEventClick}
             buttonText={{

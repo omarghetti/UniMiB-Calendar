@@ -25,7 +25,7 @@ function Calendar() {
 
   const [events, setEvents] = useState([]);
   let { user } = useContext(AuthContext);
-  const gCalId = user ? user.email : '';
+  const gCalId = user ? user.email : "";
 
   async function fetchEvents() {
     function addEventColor(e) {

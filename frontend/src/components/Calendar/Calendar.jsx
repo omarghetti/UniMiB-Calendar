@@ -25,6 +25,7 @@ function Calendar() {
 
   const [events, setEvents] = useState([]);
   let { user } = useContext(AuthContext);
+  const gCalId = user ? user.email : '';
 
   async function fetchEvents() {
     function addEventColor(e) {
@@ -109,7 +110,7 @@ function Calendar() {
             }}
             events={{
               events,
-              googleCalendarId: user.email
+              googleCalendarId: gCalId
             }}
             eventRender={renderEvent}
             eventClick={handleEventClick}

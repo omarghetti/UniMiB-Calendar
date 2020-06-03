@@ -4,12 +4,11 @@ import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import EventIcon from "@material-ui/icons/Event";
+import LabelIcon from "@material-ui/icons/Label";
 import TimeIcon from "@material-ui/icons/AccessTime";
 import PeopleIcon from "@material-ui/icons/People";
 import PlaceIcon from "@material-ui/icons/Place";
 import NotesIcon from "@material-ui/icons/Notes";
-import AttachmentIcon from "@material-ui/icons/AttachFile";
 import ListItemText from "@material-ui/core/ListItemText";
 import { useHistory, useParams } from "react-router-dom";
 import axios from "axios";
@@ -123,7 +122,7 @@ function EventDetail() {
           <List className={classes.detail}>
             <ListItem>
               <ListItemAvatar>
-                <EventIcon />
+                <LabelIcon />
               </ListItemAvatar>
               <ListItemText
                 data-test-id="event-detail-type-value"
@@ -161,22 +160,6 @@ function EventDetail() {
                   getFormattedPropertyValue(
                     event.attachments,
                     "Nessun luogo specificato"
-                  )
-                )}
-              />
-            </ListItem>
-            <ListItem>
-              <ListItemAvatar>
-                <AttachmentIcon />
-              </ListItemAvatar>
-              <ListItemText
-                primary="Allegati"
-                secondary={renderWhenReady(
-                  !isFetching,
-                  <Skeleton variant="text" width={270} />,
-                  getFormattedPropertyValues(
-                    event.attachments,
-                    "Nessun allegato"
                   )
                 )}
               />

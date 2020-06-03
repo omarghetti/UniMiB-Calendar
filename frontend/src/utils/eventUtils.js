@@ -1,5 +1,5 @@
 import * as R from "ramda";
-import { DateTime } from "luxon";
+import moment from "moment";
 
 export const typeMapper = {
   GENERIC_MEETING: {
@@ -19,8 +19,18 @@ export const typeMapper = {
   }
 };
 
-function formatDateInterval(date, preset) {
-  return DateTime.fromISO(date).toLocaleString({ ...preset, locale: "it" });
+function formatDateInterval(date, format) {
+  console.info("moee", moment(date).locale("it"));
+  console.info(
+    "fff",
+    moment(date)
+      .locale("it")
+      .format(format)
+  );
+  return moment(date)
+    .utc()
+    .locale("it")
+    .format(format);
 }
 
 export function getFormattedTimeInterval(event) {
@@ -31,8 +41,8 @@ export function getFormattedTimeInterval(event) {
         R.join(
           " - ",
           R.uniq([
-            `${formatDateInterval(event.start, DateTime.DATE_FULL)}`,
-            `${formatDateInterval(event.end, DateTime.DATE_FULL)}`
+            `${formatDateInterval(event.start, "DD MMMM YYYY")}`,
+            `${formatDateInterval(event.end, "DD MMMM YYYY")}`
           ])
         )
     ],
@@ -41,8 +51,8 @@ export function getFormattedTimeInterval(event) {
       () =>
         `${formatDateInterval(
           event.start,
-          DateTime.DATETIME_MED
-        )} - ${formatDateInterval(event.end, DateTime.DATETIME_MED)}`
+          "DD MMMM YYYY, HH:mm"
+        )} - ${formatDateInterval(event.end, "DD MMMM YYYY, HH:mm")}`
     ]
   ])();
 }

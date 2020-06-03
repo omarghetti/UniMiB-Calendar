@@ -4,6 +4,7 @@ import { mount } from "enzyme";
 import axiosMock from "axios";
 import { MemoryRouter } from "react-router-dom";
 import { waitFor } from "@testing-library/dom";
+import { MockTheme } from "../../test-utils";
 
 jest.mock("axios");
 
@@ -18,7 +19,9 @@ describe("Calendar component", () => {
   it("renders without crashing", () => {
     mount(
       <MemoryRouter>
-        <Calendar />
+        <MockTheme>
+          <Calendar />
+        </MockTheme>
       </MemoryRouter>
     );
   });
@@ -31,7 +34,9 @@ describe("Calendar component", () => {
 
     mount(
       <MemoryRouter>
-        <Calendar />
+        <MockTheme>
+          <Calendar />
+        </MockTheme>
       </MemoryRouter>
     );
 

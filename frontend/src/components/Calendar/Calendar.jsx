@@ -1,10 +1,4 @@
-import React, {
-  Fragment,
-  useContext,
-  useEffect,
-  useRef,
-  useState
-} from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -15,9 +9,24 @@ import { useHistory } from "react-router-dom";
 import { typeMapper } from "../../utils/eventUtils";
 import * as R from "ramda";
 import { AuthContext } from "../../contexts/AuthContext";
-import TopBar from "../TopBar/TopBar";
+import Fab from "@material-ui/core/Fab";
+import AddIcon from "@material-ui/icons/Add";
+import makeStyles from "@material-ui/core/styles/makeStyles";
+
+const useStyles = makeStyles(theme => ({
+  fab: {
+    position: "fixed",
+    bottom: theme.spacing(3),
+    right: theme.spacing(3),
+    zIndex: 99
+  },
+  calContainer: {
+    height: `calc(100vh - ${theme.offsets.toolbar}px) !important`
+  }
+}));
 
 function Calendar() {
+  const classes = useStyles();
   let history = useHistory();
 
   const calendarComponentRef = useRef(null);
@@ -68,15 +77,18 @@ function Calendar() {
     // handle render event
   }
 
+  function handleAddEvent() {
+    history.push("/new");
+  }
+
   return (
-    <Fragment>
-      <TopBar />
+    <div>
       <Swipeable
         onSwipedRight={previous}
         onSwipedLeft={next}
         preventDefaultTouchmoveEvent={true}
       >
-        <Container className={"calendar-container"}>
+        <Container className={`calendar-container ${classes.calContainer}`}>
           <FullCalendar
             defaultView="dayGridMonth"
             plugins={[dayGridPlugin, timeGridPlugin]}
@@ -127,9 +139,18 @@ function Calendar() {
             }}
             ref={calendarComponentRef}
           />
+          <Fab
+            data-test-id="calendar-btn-new-event"
+            color="primary"
+            aria-label="add"
+            className={classes.fab}
+            onClick={handleAddEvent}
+          >
+            <AddIcon />
+          </Fab>
         </Container>
       </Swipeable>
-    </Fragment>
+    </div>
   );
 }
 

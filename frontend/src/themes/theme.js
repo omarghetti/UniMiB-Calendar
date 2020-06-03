@@ -18,6 +18,9 @@ const theme = createMuiTheme({
       main: "#F4511E",
       contrastText: "#fff"
     }
+  },
+  offsets: {
+    toolbar: 64
   }
 });
 

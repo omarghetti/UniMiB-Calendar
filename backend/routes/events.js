@@ -7,9 +7,21 @@ const Event = require('../models/event');
 router.get('/', async (req, res) => {
   try {
     const events = await Event.find({ participants: req.user.email }).select(
-      '_id title start end allDay type',
+      '_id title start end allDay type participants place notes',
     );
     res.json(events);
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+});
+
+// Get all event types
+router.get('/types', async (req, res) => {
+  try {
+    const types = Event.schema.path('type').enumValues;
+    res.json(types);
   } catch (err) {
     res.status(500).json({
       message: err.message,
@@ -40,6 +52,11 @@ router.post('/', async (req, res) => {
   const event = new Event({
     ...req.body,
   });
+
+  // add event creator to participants if not already present
+  if (!event.participants.includes(req.user.email)) {
+    event.participants.push(req.user.email);
+  }
 
   try {
     const newEvent = await event.save();

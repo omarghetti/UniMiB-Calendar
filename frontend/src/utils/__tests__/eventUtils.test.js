@@ -5,7 +5,7 @@ import {
 } from "../eventUtils";
 
 describe("eventUtils", () => {
-  xdescribe("getFormattedTimeInterval", () => {
+  describe("getFormattedTimeInterval", () => {
     it("should return full date if allDay is false", () => {
       const event = {
         start: "2020-04-20T10:00:00.215Z",
@@ -14,7 +14,7 @@ describe("eventUtils", () => {
       };
 
       expect(getFormattedTimeInterval(event)).toEqual(
-        "20 apr 2020, 12:00 - 21 apr 2020, 13:00"
+        "20 aprile 2020, 10:00 - 21 aprile 2020, 11:00"
       );
     });
 
@@ -41,7 +41,7 @@ describe("eventUtils", () => {
     });
   });
 
-  xdescribe("getFormattedPropertyValue", () => {
+  describe("getFormattedPropertyValue", () => {
     it("should return the input value if it is not empty", () => {
       expect(getFormattedPropertyValue("foo", "empty")).toEqual("foo");
     });

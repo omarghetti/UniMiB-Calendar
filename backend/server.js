@@ -51,6 +51,7 @@ mongoose.connect(process.env.DATABASE_URL, {
 });
 
 const eventsRouter = require('./routes/events');
+const usersRouter = require('./routes/users');
 
 app.get('/api/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'ui', 'login', 'index.html'));
@@ -120,8 +121,14 @@ app.get(
 );
 
 app.use('/api/events', isLoggedIn, eventsRouter);
+app.use('/api/users', isLoggedIn, usersRouter);
 
 app.get('/app', isLoggedIn, (req, res) => {
+  console.info('serve app');
+  res.sendFile(path.join(__dirname, 'ui', 'app', 'index.html'));
+});
+
+app.get('/*', isLoggedIn, (req, res) => {
   console.info('serve app');
   res.sendFile(path.join(__dirname, 'ui', 'app', 'index.html'));
 });

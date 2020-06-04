@@ -12,9 +12,9 @@
     "dev": "nodemon server.js",
     "test": "jest",
     "test:ci": "jest --passWithNoTests --coverage",
-    "eslint": "eslint \"**/*.js\"",
-    "eslint:fix": "eslint --fix \"**/*.js\"",
-    "eslint:ci": "eslint --fix \"**/*.js\" --max-warnings=0",
+    "eslint": "eslint \"./routes/**/*.{js,json}\" \"./models/**/*.{js,json}\"",
+    "eslint:fix": "eslint --fix \"./routes/**/*.{js,json}\" \"./models/**/*.{js,json}\"",
+    "eslint:ci": "eslint --fix \"./routes/**/*.{js,json}\" \"./models/**/*.{js,json}\" --max-warnings=0",
     "prettier:check": "prettier --check \"./routes/**/*.{js,json}\" \"./models/**/*.{js,json}\"",
     "prettier:write": "prettier --write \"./routes/**/*.{js,json}\" \"./models/**/*.{js,json}\"",
     "prettier:precommit": "pretty-quick --staged \"./routes/**/*.{js,json}\" \"./models/**/*.{js,json}\""

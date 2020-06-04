@@ -161,7 +161,7 @@ function EventDetail() {
                   !isFetching,
                   <Skeleton variant="text" width={270} />,
                   getFormattedPropertyValue(
-                    event.attachments,
+                    event.place,
                     "Nessun luogo specificato"
                   )
                 )}

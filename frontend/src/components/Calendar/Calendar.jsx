@@ -115,9 +115,10 @@ function Calendar() {
               }
             }}
             eventSources={[
-              events, {
+              events,
+              {
                 googleCalendarId: gCalId,
-                color: 'yellow',
+                color: "yellow",
                 textColor: "black"
               }
             ]}

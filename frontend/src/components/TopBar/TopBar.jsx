@@ -59,7 +59,7 @@ function TopBar() {
                 onClick={handleMenu}
                 color="inherit"
               >
-                <Avatar src={avatar} alt={"U"} />
+                <Avatar src={avatar} alt={user.name?.charAt(0) || "U"} />
               </IconButton>
             }
             <Menu

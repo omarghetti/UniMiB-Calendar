@@ -63,11 +63,11 @@ function Calendar() {
   }
 
   function handleEventClick({ event }) {
-    if(event.url){
+    if (event.url) {
       event.preventDefault();
 
-      window.open(event.url,"Popup");
-    }else {
+      window.open(event.url, "Popup");
+    } else {
       history.push(`calendar/${event.extendedProps._id}`);
     }
   }

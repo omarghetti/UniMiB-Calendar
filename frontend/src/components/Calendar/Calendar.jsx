@@ -63,7 +63,13 @@ function Calendar() {
   }
 
   function handleEventClick({ event }) {
-    history.push(`calendar/${event.extendedProps._id}`);
+    if(event.url){
+      event.preventDefault();
+
+      window.open(event.url,"Popup");
+    }else {
+      history.push(`calendar/${event.extendedProps._id}`);
+    }
   }
 
   function renderEvent(info) {

@@ -51,11 +51,11 @@ const useStyles = makeStyles(theme => ({
   },
   formControl: {
     margin: theme.spacing(1),
-    minWidth: 240
+    minWidth: "90%"
   },
   formControlTitle: {
     margin: theme.spacing(2),
-    minWidth: 280,
+    minWidth: "90%",
     "& div": {
       fontSize: 24
     },
@@ -106,8 +106,10 @@ function EventEditor() {
     title: "",
     allDay: false,
     participants: [],
-    start: moment(),
-    end: moment().add(1, "hours"),
+    start: moment().toISOString(),
+    end: moment()
+      .add(1, "hours")
+      .toISOString(),
     place: ""
   });
   const [isFetching, setIsFetching] = useState(true);
@@ -115,6 +117,13 @@ function EventEditor() {
   const [userEmails, setUserEmails] = useState([]);
   const [saveRequested, setSaveRequested] = useState(false);
   const [defaultEventType, setDefaultEventType] = useState("");
+
+  const isFormValid = () => {
+    return (
+      newEvent.title &&
+      moment(newEvent.end).isSameOrAfter(moment(newEvent.start))
+    );
+  };
 
   const { setMessage } = useContext(MessageContext);
 
@@ -273,7 +282,8 @@ function EventEditor() {
             <FormControl className={classes.formControlTitle}>
               <TextField
                 inputProps={{
-                  "data-test-id": "event-editor-title-field"
+                  "data-test-id": "event-editor-title-field",
+                  maxLength: 50
                 }}
                 id="standard"
                 label="Titolo"
@@ -358,7 +368,8 @@ function EventEditor() {
                 <TextField
                   id="standard"
                   inputProps={{
-                    "data-test-id": "event-editor-place-field"
+                    "data-test-id": "event-editor-place-field",
+                    maxLength: 50
                   }}
                   label="Luogo"
                   value={newEvent.place}
@@ -374,7 +385,8 @@ function EventEditor() {
                 <TextField
                   id="standard-multiline-static"
                   inputProps={{
-                    "data-test-id": "event-editor-notes-field"
+                    "data-test-id": "event-editor-notes-field",
+                    maxLength: 50
                   }}
                   label="Note"
                   multiline
@@ -407,7 +419,7 @@ function EventEditor() {
                 className={classes.button}
                 startIcon={<SaveIcon />}
                 onClick={() => setSaveRequested(true)}
-                disabled={!newEvent.title}
+                disabled={!isFormValid()}
               >
                 Salva
               </Button>

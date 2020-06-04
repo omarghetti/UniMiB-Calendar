@@ -7,7 +7,7 @@ const eventSchema = new mongoose.Schema({
     type: String,
     required: true,
     default: false,
-    maxlength: 16,
+    maxlength: 50,
   },
   type: {
     type: String,

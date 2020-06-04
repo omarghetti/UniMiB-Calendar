@@ -98,6 +98,7 @@ function Calendar() {
       >
         <Container className={`calendar-container ${classes.calContainer}`}>
           <FullCalendar
+            timeZone="Europe/Rome"
             defaultView="dayGridMonth"
             plugins={[dayGridPlugin, timeGridPlugin, googleCalendarPlugin]}
             googleCalendarApiKey="AIzaSyDVp9kSCW2C2nLDhm8Wwn9ypggT0YO8tBk"
@@ -130,8 +131,8 @@ function Calendar() {
               events,
               {
                 googleCalendarId: gCalId,
-                color: "yellow",
-                textColor: "black"
+                color: "#F7DC31",
+                textColor: "#000"
               }
             ]}
             eventRender={renderEvent}

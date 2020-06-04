@@ -64,9 +64,7 @@ function EventDetail() {
         const response = await axios.get(`/api/events/${eventId}`);
         setEvent(response.data);
       } catch (e) {
-        const response = await axios.get(`https://www.googleapis.com/calendar/v3/calendars/${gCalId}/events/${eventId}`);
-        //history.push(`/error/${e.response.status || "404"}`);
-        setEvent(response.data);
+        history.push(`/error/${e.response.status || "404"}`);
       } finally {
         setFetchingCompleted();
       }

@@ -114,10 +114,13 @@ function Calendar() {
                 }
               }
             }}
-            events={{
-              events,
-              googleCalendarId: gCalId
-            }}
+            eventSources={[
+              events, {
+                googleCalendarId: gCalId,
+                color: 'yellow',
+                textColor: "black"
+              }
+            ]}
             eventRender={renderEvent}
             eventClick={handleEventClick}
             buttonText={{

@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
+import googleCalendarPlugin from "@fullcalendar/google-calendar";
 import Container from "@material-ui/core/Container";
 import { Swipeable } from "react-swipeable";
 import axios from "axios";
@@ -33,6 +34,7 @@ function Calendar() {
 
   const [events, setEvents] = useState([]);
   let { user } = useContext(AuthContext);
+  const gCalId = user ? user.email : "";
 
   async function fetchEvents() {
     function addEventColor(e) {
@@ -70,7 +72,13 @@ function Calendar() {
   }
 
   function handleEventClick({ event }) {
-    history.push(`calendar/${event.extendedProps._id}`);
+    if (event.url) {
+      event.preventDefault();
+
+      window.open(event.url, "Popup");
+    } else {
+      history.push(`calendar/${event.extendedProps._id}`);
+    }
   }
 
   function renderEvent(info) {
@@ -91,7 +99,8 @@ function Calendar() {
         <Container className={`calendar-container ${classes.calContainer}`}>
           <FullCalendar
             defaultView="dayGridMonth"
-            plugins={[dayGridPlugin, timeGridPlugin]}
+            plugins={[dayGridPlugin, timeGridPlugin, googleCalendarPlugin]}
+            googleCalendarApiKey="AIzaSyDVp9kSCW2C2nLDhm8Wwn9ypggT0YO8tBk"
             locale="it"
             weekends={false}
             height="parent"
@@ -117,7 +126,14 @@ function Calendar() {
                 }
               }
             }}
-            events={events}
+            eventSources={[
+              events,
+              {
+                googleCalendarId: gCalId,
+                color: "yellow",
+                textColor: "black"
+              }
+            ]}
             eventRender={renderEvent}
             eventClick={handleEventClick}
             buttonText={{

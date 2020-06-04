@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
@@ -26,6 +26,7 @@ import Skeleton from "@material-ui/lab/Skeleton";
 import { renderWhenReady } from "../../utils/renderUtils";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const useStyles = makeStyles(theme => ({
   header: {
@@ -46,6 +47,8 @@ function EventDetail() {
   const classes = useStyles();
   const history = useHistory();
   let { eventId } = useParams();
+  let { user } = useContext(AuthContext);
+  const gCalId = user ? user.email : "";
   const [event, setEvent] = useState({ participants: [], attachments: [] });
   const [isFetching, setIsFetching] = useState(true);
 
@@ -66,7 +69,7 @@ function EventDetail() {
     }
 
     fetchEvent();
-  }, [eventId, history, setFetchingCompleted]);
+  }, [gCalId, eventId, history, setFetchingCompleted]);
 
   function handleBackClick() {
     history.push("/calendar");

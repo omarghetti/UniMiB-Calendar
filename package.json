@@ -1,6 +1,6 @@
 {
   "name": "unimib-calendar-root",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "unimib calendar",
   "engines": {
     "node": "13.11.0"

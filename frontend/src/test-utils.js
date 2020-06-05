@@ -4,8 +4,12 @@ import { ThemeProvider } from "@material-ui/styles";
 import { MemoryRouter } from "react-router-dom";
 import { render } from "@testing-library/react";
 
-function MockTheme({ children }) {
-  const theme = createMuiTheme({});
+export function MockTheme({ children }) {
+  const theme = createMuiTheme({
+    offsets: {
+      toolbar: 64
+    }
+  });
   return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
 }
 

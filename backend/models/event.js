@@ -7,7 +7,7 @@ const eventSchema = new mongoose.Schema({
     type: String,
     required: true,
     default: false,
-    maxlength: 16,
+    maxlength: 50,
   },
   type: {
     type: String,
@@ -35,7 +35,7 @@ const eventSchema = new mongoose.Schema({
     required: false,
     default: [],
   },
-  location: {
+  place: {
     type: String,
     required: false,
     default: '',

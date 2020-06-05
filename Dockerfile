@@ -22,7 +22,7 @@ COPY backend/package*.json ./
 RUN npm install
 
 COPY ./backend .
-COPY --from=frontend /app/build ./ui
+COPY --from=frontend /app/build ./ui/app
 
 EXPOSE 8080
 

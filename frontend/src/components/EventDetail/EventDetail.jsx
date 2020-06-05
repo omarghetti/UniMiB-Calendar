@@ -1,15 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import EventIcon from "@material-ui/icons/Event";
+import LabelIcon from "@material-ui/icons/Label";
 import TimeIcon from "@material-ui/icons/AccessTime";
 import PeopleIcon from "@material-ui/icons/People";
 import PlaceIcon from "@material-ui/icons/Place";
 import NotesIcon from "@material-ui/icons/Notes";
-import AttachmentIcon from "@material-ui/icons/AttachFile";
 import ListItemText from "@material-ui/core/ListItemText";
 import { useHistory, useParams } from "react-router-dom";
 import axios from "axios";
@@ -25,6 +24,9 @@ import {
 } from "../../utils/eventUtils";
 import Skeleton from "@material-ui/lab/Skeleton";
 import { renderWhenReady } from "../../utils/renderUtils";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const useStyles = makeStyles(theme => ({
   header: {
@@ -45,8 +47,14 @@ function EventDetail() {
   const classes = useStyles();
   const history = useHistory();
   let { eventId } = useParams();
+  let { user } = useContext(AuthContext);
+  const gCalId = user ? user.email : "";
   const [event, setEvent] = useState({ participants: [], attachments: [] });
   const [isFetching, setIsFetching] = useState(true);
+
+  const setFetchingCompleted = useCallback(() => {
+    setIsFetching(false);
+  }, []);
 
   useEffect(() => {
     async function fetchEvent() {
@@ -54,14 +62,14 @@ function EventDetail() {
         const response = await axios.get(`/api/events/${eventId}`);
         setEvent(response.data);
       } catch (e) {
-        history.push(`/error/${e.response.status}`);
+        history.push(`/error/${e.response.status || "404"}`);
       } finally {
-        setIsFetching(false);
+        setFetchingCompleted();
       }
     }
 
     fetchEvent();
-  }, [eventId, history]);
+  }, [gCalId, eventId, history, setFetchingCompleted]);
 
   function handleBackClick() {
     history.push("/calendar");
@@ -81,6 +89,7 @@ function EventDetail() {
             color="primary"
             aria-label="back"
             onClick={handleBackClick}
+            data-test-id="event-detail-btn-back"
           >
             <ArrowBack fontSize="large" />
           </IconButton>
@@ -111,76 +120,69 @@ function EventDetail() {
 
   function renderDetail() {
     return (
-      <List className={classes.detail}>
-        <ListItem>
-          <ListItemAvatar>
-            <EventIcon />
-          </ListItemAvatar>
-          <ListItemText
-            primary="Tipo"
-            secondary={renderWhenReady(
-              !isFetching,
-              <Skeleton variant="text" width={270} />,
-              typeMapper[event.type]?.label
-            )}
-          />
-        </ListItem>
-        <ListItem>
-          <ListItemAvatar>
-            <PeopleIcon />
-          </ListItemAvatar>
-          <ListItemText
-            primary="Partecipanti"
-            secondary={renderWhenReady(
-              !isFetching,
-              <Skeleton variant="text" width={270} />,
-              getFormattedPropertyValues(event.participants, "")
-            )}
-          />
-        </ListItem>
-        <ListItem>
-          <ListItemAvatar>
-            <PlaceIcon />
-          </ListItemAvatar>
-          <ListItemText
-            primary="Luogo"
-            secondary={renderWhenReady(
-              !isFetching,
-              <Skeleton variant="text" width={270} />,
-              getFormattedPropertyValue(
-                event.attachments,
-                "Nessun luogo specificato"
-              )
-            )}
-          />
-        </ListItem>
-        <ListItem>
-          <ListItemAvatar>
-            <AttachmentIcon />
-          </ListItemAvatar>
-          <ListItemText
-            primary="Allegati"
-            secondary={renderWhenReady(
-              !isFetching,
-              <Skeleton variant="text" width={270} />,
-              getFormattedPropertyValues(event.attachments, "Nessun allegato")
-            )}
-          />
-        </ListItem>
-        <ListItem>
-          <ListItemAvatar>
-            <NotesIcon />
-          </ListItemAvatar>
-          <ListItemText
-            primary="Note"
-            secondary={renderWhenReady(
-              !isFetching,
-              <Skeleton variant="text" width={270} />,
-              getFormattedPropertyValue(event.notes, "Nessuna nota")
-            )}
-          />
-        </ListItem>
-      </List>
+      <Card className={classes.root}>
+        <CardContent>
+          <List className={classes.detail}>
+            <ListItem>
+              <ListItemAvatar>
+                <LabelIcon />
+              </ListItemAvatar>
+              <ListItemText
+                data-test-id="event-detail-type-value"
+                primary="Tipo"
+                secondary={renderWhenReady(
+                  !isFetching,
+                  <Skeleton variant="text" width={270} />,
+                  typeMapper[event.type]?.label
+                )}
+              />
+            </ListItem>
+            <ListItem>
+              <ListItemAvatar>
+                <PeopleIcon />
+              </ListItemAvatar>
+              <ListItemText
+                data-test-id="event-detail-participants-value"
+                primary="Partecipanti"
+                secondary={renderWhenReady(
+                  !isFetching,
+                  <Skeleton variant="text" width={270} />,
+                  getFormattedPropertyValues(event.participants, "")
+                )}
+              />
+            </ListItem>
+            <ListItem>
+              <ListItemAvatar>
+                <PlaceIcon />
+              </ListItemAvatar>
+              <ListItemText
+                primary="Luogo"
+                secondary={renderWhenReady(
+                  !isFetching,
+                  <Skeleton variant="text" width={270} />,
+                  getFormattedPropertyValue(
+                    event.place,
+                    "Nessun luogo specificato"
+                  )
+                )}
+              />
+            </ListItem>
+            <ListItem>
+              <ListItemAvatar>
+                <NotesIcon />
+              </ListItemAvatar>
+              <ListItemText
+                primary="Note"
+                secondary={renderWhenReady(
+                  !isFetching,
+                  <Skeleton variant="text" width={270} />,
+                  getFormattedPropertyValue(event.notes, "Nessuna nota")
+                )}
+              />
+            </ListItem>
+          </List>
+        </CardContent>
+      </Card>
     );
   }
 

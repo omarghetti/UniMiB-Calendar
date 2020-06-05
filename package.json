@@ -1,6 +1,6 @@
 {
   "name": "unimib-calendar-root",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "unimib calendar",
   "engines": {
     "node": "13.11.0"
@@ -12,9 +12,11 @@
   "scripts": {
     "precommit:frontend": "cd frontend && npm run prettier:precommit && npm run eslint:ci",
     "precommit:backend": "cd backend && npm run prettier:precommit && npm run eslint:ci",
-    "precommit": "npm run precommit:backend && npm run precommit:frontend && git add ."
+    "precommit": "npm run precommit:backend && npm run precommit:frontend && git add .",
+    "cypress:open": "cypress open"
   },
   "devDependencies": {
+    "cypress": "^4.4.1",
     "husky": "^4.2.3"
   },
   "husky": {

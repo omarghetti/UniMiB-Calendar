@@ -2,8 +2,7 @@
 
 ## Descrizione
 
-L'applicazione permette la gestione degli appuntamenti tra studenti e professori del DISCo. Essa si integra con servizi Google come Google Calendar, Hangouts e Gmail attraverso le relative API.
-
+This web application enables students from all around the university to book an appointment with professors and course assistants
 ## Architettura di alto livello
 
 ![high-level-arhitecture](./high-level-architecture.png)
